@@ -1,42 +1,224 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { DockNavigation } from "@/components/dock-navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  PlusCircle,
-  Edit,
-  Trash,
-  LogOut,
-  Github,
-  Twitter,
-  Linkedin,
-  Instagram,
-} from "lucide-react";
+import { PlusCircle, Edit, Trash, LogOut, AlertCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { BlogForm } from "@/components/admin/form/blog-form";
+import { SocialForm } from "@/components/admin/form/social-form";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useAuth } from "@/contexts/AuthContext";
+import { signOut, getAuth } from "firebase/auth";
+
+interface Blog {
+  _id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  image: string;
+  date: string;
+  author: string;
+  tags: string[];
+}
+
+interface Social {
+  _id: string;
+  platform: string;
+  username: string;
+  url: string;
+  icon: string;
+  bgColor: string;
+  iconColor: string;
+}
 
 export default function AdminPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [socials, setSocials] = useState<Social[]>([]);
+  const [isLoadingBlogs, setIsLoadingBlogs] = useState(false);
+  const [isLoadingSocials, setIsLoadingSocials] = useState(false);
+  const [error, setError] = useState("");
+  const [openBlogForm, setOpenBlogForm] = useState(false);
+  const [openSocialForm, setOpenSocialForm] = useState(false);
+  const [currentBlog, setCurrentBlog] = useState<Blog | null>(null);
+  const [currentSocial, setCurrentSocial] = useState<Social | null>(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<{
+    type: "blog" | "social";
+    id: string;
+  } | null>(null);
+
+  const { user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    // Check if user is authenticated
-    const auth = localStorage.getItem("isAuthenticated");
-    if (auth !== "1") {
+    if (!user) {
       router.push("/login");
     } else {
       setIsAuthenticated(true);
+      fetchBlogs();
+      fetchSocials();
     }
     setIsLoading(false);
-  }, [router]);
+  }, [router, user]);
+
+  const fetchBlogs = async () => {
+    setIsLoadingBlogs(true);
+    setError("");
+    try {
+      const response = await fetch("/api/blogs");
+      if (!response.ok) {
+        throw new Error("Failed to fetch blogs");
+      }
+      const data = await response.json();
+      setBlogs(data);
+    } catch (err) {
+      console.error("Error fetching blogs:", err);
+      setError("Failed to load blogs. Please try again.");
+    } finally {
+      setIsLoadingBlogs(false);
+    }
+  };
+
+  const fetchSocials = async () => {
+    setIsLoadingSocials(true);
+    setError("");
+    try {
+      const response = await fetch("/api/socials");
+      if (!response.ok) {
+        throw new Error("Failed to fetch socials");
+      }
+      const data = await response.json();
+      setSocials(data);
+    } catch (err) {
+      console.error("Error fetching socials:", err);
+      setError("Failed to load social links. Please try again.");
+    } finally {
+      setIsLoadingSocials(false);
+    }
+  };
+
+  const handleDeleteItem = async () => {
+    if (!itemToDelete) return;
+
+    try {
+      const { type, id } = itemToDelete;
+      const endpoint =
+        type === "blog" ? `/api/blogs/${id}` : `/api/socials/${id}`;
+
+      const response = await fetch(endpoint, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete ${type}`);
+      }
+
+      if (type === "blog") {
+        setBlogs(blogs.filter((blog) => blog._id !== id));
+      } else {
+        setSocials(socials.filter((social) => social._id !== id));
+      }
+
+      setDeleteConfirmOpen(false);
+      setItemToDelete(null);
+    } catch (err) {
+      console.error("Error deleting item:", err);
+      setError(`Failed to delete item. Please try again.`);
+    }
+  };
 
   const handleLogout = () => {
-    localStorage.removeItem("isAuthenticated");
+    const auth = getAuth();
+    signOut(auth);
     router.push("/login");
     window.location.reload();
+  };
+
+  const handleAddBlog = () => {
+    setCurrentBlog(null);
+    setOpenBlogForm(true);
+  };
+
+  const handleEditBlog = (blog: Blog) => {
+    setCurrentBlog(blog);
+    setOpenBlogForm(true);
+  };
+
+  const handleAddSocial = () => {
+    setCurrentSocial(null);
+    setOpenSocialForm(true);
+  };
+
+  const handleEditSocial = (social: Social) => {
+    setCurrentSocial(social);
+    setOpenSocialForm(true);
+  };
+
+  const handleSaveBlog = async (blogData: any) => {
+    try {
+      const method = currentBlog ? "PUT" : "POST";
+      const endpoint = currentBlog
+        ? `/api/blogs/${currentBlog._id}`
+        : "/api/blogs";
+
+      const response = await fetch(endpoint, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(blogData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save blog");
+      }
+
+      setOpenBlogForm(false);
+      fetchBlogs();
+    } catch (err) {
+      console.error("Error saving blog:", err);
+      setError("Failed to save blog. Please try again.");
+    }
+  };
+
+  const handleSaveSocial = async (socialData: any) => {
+    try {
+      const method = currentSocial ? "PUT" : "POST";
+      const endpoint = currentSocial
+        ? `/api/socials/${currentSocial._id}`
+        : "/api/socials";
+
+      const response = await fetch(endpoint, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(socialData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save social link");
+      }
+
+      setOpenSocialForm(false);
+      fetchSocials();
+    } catch (err) {
+      console.error("Error saving social link:", err);
+      setError("Failed to save social link. Please try again.");
+    }
   };
 
   // Show loading or nothing while checking authentication
@@ -54,7 +236,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-muted/30 pb-25">
+    <div className="min-h-screen bg-muted/30 pb-20">
       <div className="container mx-auto px-4 py-8">
         <header className="mb-8 flex justify-between items-center">
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
@@ -63,6 +245,14 @@ export default function AdminPage() {
             Logout
           </Button>
         </header>
+
+        {error && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
         <Tabs defaultValue="blog">
           <TabsList className="mb-8">
@@ -73,155 +263,187 @@ export default function AdminPage() {
           <TabsContent value="blog">
             <div className="mb-6 flex justify-between items-center">
               <h2 className="text-xl font-semibold">Manage Blog Posts</h2>
-              <Button>
+              <Button onClick={handleAddBlog}>
                 <PlusCircle className="mr-2 h-4 w-4" />
                 New Post
               </Button>
             </div>
 
-            <div className="space-y-4">
-              {blogPosts.map((post, index) => (
-                <Card key={index}>
-                  <CardContent className="py-2 px-4">
-                    <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 items-start sm:items-center justify-between">
-                      <div>
-                        <h3 className="font-medium">{post.title}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          {post.date} • {post.category}
-                        </p>
+            {isLoadingBlogs ? (
+              <div className="text-center py-8">Loading blog posts...</div>
+            ) : blogs.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                No blog posts found. Create your first post!
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {blogs.map((blog) => (
+                  <Card key={blog._id}>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-medium">{blog.title}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {new Date(blog.date).toLocaleDateString()} •{" "}
+                            {blog.category}
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEditBlog(blog)}
+                          >
+                            <Edit className="mr-2 h-4 w-4" />
+                            Edit
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => {
+                              setItemToDelete({ type: "blog", id: blog._id });
+                              setDeleteConfirmOpen(true);
+                            }}
+                          >
+                            <Trash className="mr-2 h-4 w-4" />
+                            Delete
+                          </Button>
+                        </div>
                       </div>
-                      <div className="flex flex-row sm:flex-col gap-2 pb-2 sm:py-2">
-                        <Button variant="outline" size="sm">
-                          <Edit className="mr-2 h-4 w-4" />
-                          Edit
-                        </Button>
-                        <Button variant="destructive" size="sm">
-                          <Trash className="mr-2 h-4 w-4" />
-                          Delete
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="social">
             <div className="mb-6 flex justify-between items-center">
               <h2 className="text-xl font-semibold">Manage Social Links</h2>
-              <Button>
+              <Button onClick={handleAddSocial}>
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Add Link
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {socialLinks.map((link, index) => (
-                <Card key={index}>
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`w-10 h-10 rounded-full flex items-center justify-center ${link.bgColor}`}
-                        >
-                          <link.icon className={`h-5 w-5 ${link.iconColor}`} />
+            {isLoadingSocials ? (
+              <div className="text-center py-8">Loading social links...</div>
+            ) : socials.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                No social links found. Add your first social link!
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {socials.map((social) => (
+                  <Card key={social._id}>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`w-10 h-10 rounded-full flex items-center justify-center ${social.bgColor}`}
+                          >
+                            <span className={`${social.iconColor}`}>
+                              {social.icon}
+                            </span>
+                          </div>
+                          <div>
+                            <h3 className="font-medium">{social.platform}</h3>
+                            <p className="text-sm text-muted-foreground">
+                              {social.username}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <h3 className="font-medium">{link.platform}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            {link.username}
-                          </p>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEditSocial(social)}
+                          >
+                            <Edit className="mr-2 h-4 w-4" />
+                            Edit
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => {
+                              setItemToDelete({
+                                type: "social",
+                                id: social._id,
+                              });
+                              setDeleteConfirmOpen(true);
+                            }}
+                          >
+                            <Trash className="mr-2 h-4 w-4" />
+                            Delete
+                          </Button>
                         </div>
                       </div>
-                      <div className="flex flex-col gap-2">
-                        <Button variant="outline" size="sm">
-                          <Edit className="mr-2 h-4 w-4" />
-                          Edit
-                        </Button>
-                        <Button variant="destructive" size="sm">
-                          <Trash className="mr-2 h-4 w-4" />
-                          Delete
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </div>
 
-      <DockNavigation />
+      {/* Blog Form Dialog */}
+      <Dialog open={openBlogForm} onOpenChange={setOpenBlogForm}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {currentBlog ? "Edit Blog Post" : "Create New Blog Post"}
+            </DialogTitle>
+          </DialogHeader>
+          <BlogForm
+            blog={currentBlog}
+            onSave={handleSaveBlog}
+            onCancel={() => setOpenBlogForm(false)}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Social Form Dialog */}
+      <Dialog open={openSocialForm} onOpenChange={setOpenSocialForm}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {currentSocial ? "Edit Social Link" : "Add New Social Link"}
+            </DialogTitle>
+          </DialogHeader>
+          <SocialForm
+            social={currentSocial}
+            onSave={handleSaveSocial}
+            onCancel={() => setOpenSocialForm(false)}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p>
+              Are you sure you want to delete this {itemToDelete?.type}? This
+              action cannot be undone.
+            </p>
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setDeleteConfirmOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleDeleteItem}>
+              Delete
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
-
-const blogPosts = [
-  {
-    title: "Getting Started with Next.js 14",
-    date: "March 15, 2024",
-    category: "Development",
-    slug: "getting-started-with-nextjs-14",
-  },
-  {
-    title: "The Power of Tailwind CSS",
-    date: "March 10, 2024",
-    category: "Design",
-    slug: "power-of-tailwind-css",
-  },
-  {
-    title: "Building a Personal Brand Online",
-    date: "March 5, 2024",
-    category: "Career",
-    slug: "building-personal-brand-online",
-  },
-  {
-    title: "Introduction to TypeScript",
-    date: "February 28, 2024",
-    category: "Development",
-    slug: "introduction-to-typescript",
-  },
-  {
-    title: "Designing for Accessibility",
-    date: "February 20, 2024",
-    category: "Design",
-    slug: "designing-for-accessibility",
-  },
-];
-
-const socialLinks = [
-  {
-    platform: "GitHub",
-    username: "@username",
-    url: "https://github.com/username",
-    icon: Github,
-    bgColor: "bg-gray-900",
-    iconColor: "text-white",
-  },
-  {
-    platform: "Twitter",
-    username: "@username",
-    url: "https://twitter.com/username",
-    icon: Twitter,
-    bgColor: "bg-blue-500",
-    iconColor: "text-white",
-  },
-  {
-    platform: "LinkedIn",
-    username: "Full Name",
-    url: "https://linkedin.com/in/username",
-    icon: Linkedin,
-    bgColor: "bg-blue-700",
-    iconColor: "text-white",
-  },
-  {
-    platform: "Instagram",
-    username: "@username",
-    url: "https://instagram.com/username",
-    icon: Instagram,
-    bgColor: "bg-pink-600",
-    iconColor: "text-white",
-  },
-];

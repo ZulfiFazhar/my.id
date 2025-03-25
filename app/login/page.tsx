@@ -1,7 +1,8 @@
 "use client";
 
 import type React from "react";
-
+import { signInWithPopup, signOut } from "firebase/auth";
+import { auth, googleProvider } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,39 +12,39 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { Lock } from "lucide-react";
+import Image from "next/image";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const { setUser } = useAuth();
+  const allowedEmail = process.env.NEXT_PUBLIC_FIREBASE_EMAIL_ALLOWED;
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLoginWithGoogle = async () => {
     setIsLoading(true);
-    setError("");
+    setError(""); // Reset error state
 
     try {
-      // In a real app, you would validate credentials with an API
-      if (email === "admin@example.com" && password === "password") {
-        // Set some authentication state (e.g., cookies or localStorage)
-        localStorage.setItem("isAuthenticated", "1");
-        router.push("/admin");
+      const result = await signInWithPopup(auth, googleProvider);
+      const userEmail = result.user.email;
+
+      if (userEmail === allowedEmail) {
+        setUser(result.user); // Set user in context
+        router.push("/admin"); // Redirect to admin page
       } else {
-        setError("Invalid email or password");
+        setError("Access denied. Your email is not authorized."); // Friendly error message
         setIsLoading(false);
+        await signOut(auth); // Sign out user if email is not allowed
       }
     } catch (err) {
-      console.error("Error logging in:", err);
-      setError("An error occurred. Please try again.");
-      setIsLoading(false);
+      console.error("Error during Google login:", err);
+      setError("An error occurred while logging in. Please try again."); // Generic error message
+      setIsLoading(false); // Reset loading state
     }
   };
 
@@ -57,55 +58,25 @@ export default function LoginPage() {
             </div>
           </div>
           <CardTitle className="text-2xl">Admin Login</CardTitle>
-          <CardDescription>
-            Enter your credentials to access the admin dashboard
-          </CardDescription>
+          <CardDescription>Login to access the admin dashboard</CardDescription>
         </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
-            {error && (
-              <div className="p-3 text-sm bg-destructive/10 text-destructive rounded-md">
-                {error}
-              </div>
-            )}
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="admin@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+        <CardContent className="space-y-4">
+          {error && (
+            <div className="p-3 text-sm bg-destructive/10 text-destructive rounded-md">
+              {error}
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
-                <Link href="#" className="text-sm text-primary hover:underline">
-                  Forgot password?
-                </Link>
-              </div>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="mt-4">
-            <Button className="w-full" type="submit" disabled={isLoading}>
-              {isLoading ? "Logging in..." : "Login"}
-            </Button>
-          </CardFooter>
-        </form>
-        <div className="p-4 text-center text-sm text-muted-foreground">
-          <p>Demo credentials:</p>
-          <p>Email: admin@example.com</p>
-          <p>Password: password</p>
-        </div>
+          )}
+          <Button
+            variant="outline"
+            onClick={handleLoginWithGoogle}
+            className="w-full cursor-pointer flex items-center gap-2"
+            disabled={isLoading}
+          >
+            <Image src="/google.svg" alt="Google Logo" width={15} height={15} />
+            {isLoading ? "Loading..." : "Continue with Google"}
+          </Button>
+        </CardContent>
+        <CardFooter />
       </Card>
     </div>
   );

@@ -1,74 +1,40 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { DockNavigation } from "@/components/dock-navigation";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, User, Tag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { connectToDatabase, formatMongoData } from "@/lib/db";
+import Blog from "@/models/Blog";
+import { notFound } from "next/navigation";
 
 interface BlogPostPageProps {
-  params: Promise<{
+  params: {
     slug: string;
-  }>;
-}
-
-export default function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = {
-    title: "Getting Started with Next.js 14",
-    content: `
-      <p>Next.js 14 introduces several exciting features that make building web applications even more enjoyable and efficient. In this post, we'll explore the key highlights and how you can leverage them in your projects.</p>
-      
-      <h2>Server Components</h2>
-      <p>React Server Components allow you to render components on the server, reducing the JavaScript sent to the client and improving performance. This is particularly useful for content-heavy pages that don't require much interactivity.</p>
-      
-      <p>Here's a simple example of a server component:</p>
-      
-      <pre><code>// This component renders on the server
-export default function ServerComponent() {
-  return (
-    <div>
-      <h1>Hello from the server!</h1>
-      <p>This component was rendered on the server.</p>
-    </div>
-  )
-}</code></pre>
-
-      <h2>Improved Data Fetching</h2>
-      <p>Next.js 14 simplifies data fetching with built-in functions that work seamlessly with Server Components. You can fetch data directly in your components without additional libraries.</p>
-      
-      <pre><code>// Fetch data in a server component
-async function getData() {
-  const res = await fetch('https://api.example.com/data')
-  
-  if (!res.ok) {
-    throw new Error('Failed to fetch data')
-  }
-  
-  return res.json()
-}
-
-export default async function Page() {
-  const data = await getData()
-  
-  return (
-    <div>
-      <h1>{data.title}</h1>
-      <p>{data.description}</p>
-    </div>
-  )
-}</code></pre>
-
-      <h2>Conclusion</h2>
-      <p>Next.js 14 represents a significant step forward for React development, offering improved performance, simplified data fetching, and a more intuitive development experience. Whether you're building a simple blog or a complex application, Next.js 14 provides the tools you need to create fast, scalable, and maintainable web applications.</p>
-    `,
-    image: "/placeholder.svg?height=400&width=800",
-    category: "Development",
-    date: "March 15, 2024",
-    author: "John Doe",
-    tags: ["Next.js", "React", "Web Development"],
   };
+}
+
+async function getBlogBySlug(slug: string) {
+  try {
+    await connectToDatabase();
+    const blog = await Blog.findOne({ slug });
+    if (!blog) return null;
+    return formatMongoData(blog);
+  } catch (error) {
+    console.error("Error fetching blog:", error);
+    return null;
+  }
+}
+
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const { slug } = await params;
+  const post = await getBlogBySlug(slug);
+
+  if (!post) {
+    notFound();
+  }
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="min-h-screen bg-muted/30 pb-20">
       <div className="container mx-auto px-4 py-8">
         <Button variant="ghost" className="mb-6" asChild>
           <Link href="/blog">
@@ -85,7 +51,7 @@ export default async function Page() {
             <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-6">
               <div className="flex items-center">
                 <Calendar className="mr-1 h-4 w-4" />
-                {post.date}
+                {new Date(post.date).toLocaleDateString()}
               </div>
               <div className="flex items-center">
                 <User className="mr-1 h-4 w-4" />
@@ -98,7 +64,7 @@ export default async function Page() {
             </div>
             <div className="aspect-[2/1] relative rounded-lg overflow-hidden">
               <Image
-                src={post.image || "/placeholder.svg"}
+                src={post.image || "/placeholder.svg?height=400&width=800"}
                 alt={post.title}
                 fill
                 className="object-cover"
@@ -114,7 +80,7 @@ export default async function Page() {
           <div className="mt-8 pt-6 border-t">
             <h3 className="font-medium mb-2">Tags</h3>
             <div className="flex flex-wrap gap-2">
-              {post.tags.map((tag, index) => (
+              {post.tags.map((tag: string, index: number) => (
                 <span
                   key={index}
                   className="px-3 py-1 bg-muted rounded-full text-sm"

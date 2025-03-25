@@ -4,7 +4,7 @@
 import type React from "react";
 
 import { cn } from "@/lib/utils";
-import { Home, FileText, Share2, Settings } from "lucide-react";
+import { Home, FileText, UserRoundPlus, Settings } from "lucide-react";
 import { useState, useEffect } from "react";
 import {
   Tooltip,
@@ -13,6 +13,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface DockItemProps {
   icon: React.ElementType;
@@ -64,19 +65,18 @@ export function DockNavigation() {
   const pathname = usePathname();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
-  const [authStatus, setAuthStatus] = useState<string | null>(null);
+  const { user } = useAuth();
 
   // Prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
-    setAuthStatus(localStorage.getItem("isAuthenticated"));
   }, []);
 
   const dockItems = [
     { id: "home", icon: Home, label: "Home", path: "/" },
     { id: "blog", icon: FileText, label: "Blog", path: "/blog" },
-    { id: "social", icon: Share2, label: "Social", path: "/social" },
-    ...(authStatus === "1"
+    { id: "social", icon: UserRoundPlus, label: "Social", path: "/social" },
+    ...(user
       ? [{ id: "admin", icon: Settings, label: "Admin", path: "/admin" }]
       : []),
   ];

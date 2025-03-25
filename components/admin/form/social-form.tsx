@@ -112,6 +112,12 @@ export function SocialForm({ social, onSave, onCancel }: SocialFormProps) {
       bgColor: "bg-green-600",
       iconColor: "text-white",
     },
+    {
+      value: "SquarePen",
+      label: "Medium",
+      bgColor: "bg-gray-900",
+      iconColor: "text-white",
+    },
   ];
 
   // Update colors when platform changes
