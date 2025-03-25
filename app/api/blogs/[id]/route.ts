@@ -1,15 +1,13 @@
-import { type NextRequest, NextResponse } from "next/server";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase, formatMongoData } from "@/lib/db";
 import Blog from "@/models/Blog";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, context: any) {
   try {
     await connectToDatabase();
-
-    const blog = await Blog.findById(params.id);
+    const { id } = context.params;
+    const blog = await Blog.findById(id);
 
     if (!blog) {
       return NextResponse.json({ error: "Blog not found" }, { status: 404 });
@@ -25,17 +23,14 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest, context: any) {
   try {
     await connectToDatabase();
-
+    const { id } = context.params;
     const data = await req.json();
 
     const updatedBlog = await Blog.findByIdAndUpdate(
-      params.id,
+      id,
       { $set: data },
       { new: true, runValidators: true }
     );
@@ -54,14 +49,11 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest, context: any) {
   try {
     await connectToDatabase();
-
-    const deletedBlog = await Blog.findByIdAndDelete(params.id);
+    const { id } = context.params;
+    const deletedBlog = await Blog.findByIdAndDelete(id);
 
     if (!deletedBlog) {
       return NextResponse.json({ error: "Blog not found" }, { status: 404 });

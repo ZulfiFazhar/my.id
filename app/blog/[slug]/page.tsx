@@ -1,4 +1,3 @@
-import { DockNavigation } from "@/components/dock-navigation";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, User, Tag } from "lucide-react";
 import Image from "next/image";
@@ -8,9 +7,9 @@ import Blog from "@/models/Blog";
 import { notFound } from "next/navigation";
 
 interface BlogPostPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 async function getBlogBySlug(slug: string) {
@@ -107,8 +106,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </div>
         </article>
       </div>
-
-      <DockNavigation />
     </div>
   );
 }

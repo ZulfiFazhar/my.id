@@ -1,15 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { type NextRequest, NextResponse } from "next/server";
 import { connectToDatabase, formatMongoData } from "@/lib/db";
 import Social from "@/models/Social";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, context: any) {
   try {
     await connectToDatabase();
-
-    const social = await Social.findById(params.id);
+    const { id } = await context.params;
+    const social = await Social.findById(id);
 
     if (!social) {
       return NextResponse.json({ error: "Social not found" }, { status: 404 });
@@ -25,17 +23,14 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest, context: any) {
   try {
     await connectToDatabase();
 
     const data = await req.json();
-
+    const { id } = context.params;
     const updatedSocial = await Social.findByIdAndUpdate(
-      params.id,
+      id,
       { $set: data },
       { new: true, runValidators: true }
     );
@@ -54,14 +49,11 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest, context: any) {
   try {
     await connectToDatabase();
-
-    const deletedSocial = await Social.findByIdAndDelete(params.id);
+    const { id } = context.params;
+    const deletedSocial = await Social.findByIdAndDelete(id);
 
     if (!deletedSocial) {
       return NextResponse.json({ error: "Social not found" }, { status: 404 });
