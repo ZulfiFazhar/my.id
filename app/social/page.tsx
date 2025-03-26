@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+// social-page.tsx
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
+import { connectToDatabase, formatMongoData } from "@/lib/db";
 import { Card, CardContent } from "@/components/ui/card";
+import Social from "@/models/Social";
 import {
   Github,
   Twitter,
@@ -10,10 +15,8 @@ import {
   Globe,
   Mail,
 } from "lucide-react";
-import { connectToDatabase, formatMongoData } from "@/lib/db";
-import Social from "@/models/Social";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 async function getSocials() {
   try {
@@ -26,6 +29,7 @@ async function getSocials() {
   }
 }
 
+// Fungsi untuk mendapatkan komponen ikon
 function getIconComponent(iconName: string) {
   const icons: Record<string, any> = {
     Github,
@@ -38,6 +42,14 @@ function getIconComponent(iconName: string) {
   };
   return icons[iconName] || icons.Github;
 }
+
+// Impor SocialCard secara dinamis
+const LazySocialCard = dynamic(
+  () => import("@/components/social/social-card"),
+  {
+    loading: () => <div>Loading...</div>,
+  }
+);
 
 export default async function SocialPage() {
   const socialLinks = await getSocials();
@@ -61,44 +73,17 @@ export default async function SocialPage() {
             </p>
           </div>
         ) : (
-          <div className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-            {socialLinks.map((link: any) => {
-              const IconComponent = getIconComponent(link.icon);
-
-              return (
-                <Card key={link._id} className="overflow-hidden p-0">
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-center gap-4">
-                      <div className="flex gap-4">
-                        <div
-                          className={`w-12 h-12 rounded-full flex items-center justify-center ${link.bgColor}`}
-                        >
-                          <IconComponent
-                            className={`h-6 w-6 ${link.iconColor}`}
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-bold">{link.platform}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            {link.username}
-                          </p>
-                        </div>
-                      </div>
-                      <Button asChild>
-                        <a
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Connect
-                        </a>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
+          <Suspense fallback={<div>Loading social links...</div>}>
+            <div className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+              {socialLinks.map((link: any) => (
+                <LazySocialCard
+                  key={link._id}
+                  social={link}
+                  getIconComponent={getIconComponent}
+                />
+              ))}
+            </div>
+          </Suspense>
         )}
 
         <div className="mt-12 text-center">

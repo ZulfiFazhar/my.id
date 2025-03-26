@@ -1,12 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { connectToDatabase, formatMongoData } from "@/lib/db";
 import Blog from "@/models/Blog";
-import BlogCard from "@/components/blog/blog-card";
 
-export const dynamic = "force-dynamic";
+// Import BlogCard secara dinamis
+const LazyBlogCard = dynamic(() => import("@/components/blog/blog-card"), {
+  loading: () => <div>Loading...</div>,
+});
+
+export const revalidate = 60;
 
 async function getBlogs() {
   try {
@@ -67,11 +73,14 @@ export default async function BlogPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {blogs.map((post: any) => (
-              <BlogCard key={post._id} post={post} />
-            ))}
-          </div>
+          // Bungkus grid dengan Suspense untuk menampilkan fallback saat komponen dimuat
+          <Suspense fallback={<div>Loading blog posts...</div>}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+              {blogs.map((post: any) => (
+                <LazyBlogCard key={post._id} post={post} />
+              ))}
+            </div>
+          </Suspense>
         )}
 
         {blogs.length > 0 && (

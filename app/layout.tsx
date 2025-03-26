@@ -19,6 +19,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Zulfi Personal Web",
   description: "Personal and Portfolio website of Zulfi Fadilah Azhar",
+  icons: {
+    icon: "/avatartion.png",
+  },
 };
 
 export default function RootLayout({
@@ -33,7 +36,7 @@ export default function RootLayout({
       >
         <AuthProvider>
           <TopLoader />
-          <Toaster position="top-center" />
+          <Toaster position="top-center" richColors />
           {children}
           <DockNavigation />
         </AuthProvider>

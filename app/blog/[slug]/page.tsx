@@ -37,7 +37,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   return (
     <div className="min-h-screen bg-muted/30 pb-20">
       <div className="container mx-auto px-4 py-8">
-        <Button variant="ghost" className="mb-6" asChild>
+        <Button variant="link" className="mb-6" asChild>
           <Link href="/blog">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Blog
@@ -84,7 +84,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               {post.tags.map((tag: string, index: number) => (
                 <span
                   key={index}
-                  className="px-3 py-1 bg-muted rounded-full text-sm"
+                  className="px-3 py-1 bg-muted rounded-full text-sm cursor-default"
                 >
                   {tag}
                 </span>

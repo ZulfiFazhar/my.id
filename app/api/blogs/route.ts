@@ -25,7 +25,6 @@ export async function POST(req: NextRequest) {
 
     const data = await req.json();
 
-    // Generate slug if not provided
     if (!data.slug) {
       data.slug = data.title
         .toLowerCase()

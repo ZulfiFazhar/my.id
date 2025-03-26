@@ -5,6 +5,7 @@ import type React from "react";
 
 import { cn } from "@/lib/utils";
 import { Home, FileText, UserRoundPlus, Settings } from "lucide-react";
+import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import {
   Tooltip,
@@ -40,17 +41,25 @@ function DockItem({
             title={label}
             className={cn(
               "relative flex items-center justify-center transition-all duration-200 ease-in-out",
-              "w-12 h-12 rounded-full",
-              isActive
-                ? "bg-primary text-primary-foreground"
-                : "hover:bg-accent",
+              "w-12 h-12 rounded-full text-primary cursor-pointer",
+              isActive ? "text-primary-foreground" : "hover:bg-accent",
               isHovered || isActive ? "scale-110" : "scale-100"
             )}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onClick={onClick}
           >
-            <Icon className="h-5 w-5" />
+            {/* Indikator aktif */}
+            {isActive && (
+              <motion.div
+                layoutId="activeIndicator"
+                className="absolute inset-0 bg-primary text-primary-foreground rounded-full"
+                transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              />
+            )}
+
+            {/* Pastikan ikon ada di atas indikator dengan menambahkan relative */}
+            <Icon className="h-5 w-5 relative" />
           </button>
         </TooltipTrigger>
         <TooltipContent side="top">

@@ -5,6 +5,7 @@
 import type React from "react";
 
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,10 +25,10 @@ interface SocialFormProps {
 
 export function SocialForm({ social, onSave, onCancel }: SocialFormProps) {
   const [formData, setFormData] = useState({
-    _id: "",
+    _id: undefined,
     platform: "",
     username: "",
-    url: "",
+    url: "https://",
     icon: "Github",
     bgColor: "bg-gray-900",
     iconColor: "text-white",
@@ -37,7 +38,7 @@ export function SocialForm({ social, onSave, onCancel }: SocialFormProps) {
   useEffect(() => {
     if (social) {
       setFormData({
-        _id: social._id || "",
+        _id: social._id,
         platform: social.platform || "",
         username: social.username || "",
         url: social.url || "",
@@ -63,6 +64,7 @@ export function SocialForm({ social, onSave, onCancel }: SocialFormProps) {
 
     try {
       await onSave(formData);
+      toast.success("Social link saved successfully!");
     } catch (error) {
       console.error("Error saving social link:", error);
     } finally {
@@ -174,7 +176,6 @@ export function SocialForm({ social, onSave, onCancel }: SocialFormProps) {
           value={formData.url}
           onChange={handleChange}
           required
-          placeholder="https://..."
         />
       </div>
 

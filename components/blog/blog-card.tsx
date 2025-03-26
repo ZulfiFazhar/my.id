@@ -17,7 +17,7 @@ interface BlogCardProps {
 
 export default function BlogCard({ post }: BlogCardProps) {
   return (
-    <Card key={post._id} className="overflow-hidden h-fit">
+    <Card key={post._id} className="overflow-hidden h-fit p-0">
       <div className="aspect-video relative">
         <Image
           src={post.image || "/placeholder.svg?height=200&width=400"}
@@ -39,7 +39,7 @@ export default function BlogCard({ post }: BlogCardProps) {
         <span className="text-sm text-muted-foreground">
           {new Date(post.date).toLocaleDateString()}
         </span>
-        <Button variant="ghost" size="sm" asChild>
+        <Button variant="link" size="sm" asChild>
           <Link href={`/blog/${post.slug}`}>Read More</Link>
         </Button>
       </CardFooter>

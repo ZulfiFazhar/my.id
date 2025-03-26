@@ -76,7 +76,7 @@ export function BlogManagement({
       ) : (
         <div className="space-y-4">
           {blogs.map((blog) => (
-            <Card key={blog._id}>
+            <Card key={blog._id} className="p-0">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
@@ -113,7 +113,10 @@ export function BlogManagement({
 
       {/* Blog Form Dialog */}
       <Dialog open={openBlogForm} onOpenChange={setOpenBlogForm}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent
+          className="w-[90vw] h-[90vh] overflow-y-auto"
+          style={{ maxWidth: "none" }}
+        >
           <DialogHeader>
             <DialogTitle>
               {currentBlog ? "Edit Blog Post" : "Create New Blog Post"}

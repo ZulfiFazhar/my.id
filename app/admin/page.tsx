@@ -6,13 +6,13 @@ import { useRouter } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { signOut, getAuth } from "firebase/auth";
+import { toast } from "sonner";
 
 // Import modular components
 import { BlogManagement } from "@/components/admin/BlogManagement";
 import { SocialManagement } from "@/components/admin/SocialManagement";
 import { HomeManagement } from "@/components/admin/HomeManagement";
 import { DeleteConfirmation } from "@/components/admin/delete-confirmation";
-import { ErrorAlert } from "@/components/admin/error-alert";
 import { AdminHeader } from "@/components/admin/header";
 
 interface Blog {
@@ -63,8 +63,11 @@ export default function AdminPage() {
       fetchBlogs();
       fetchSocials();
     }
+    if (error) {
+      toast.error(error);
+    }
     setIsLoading(false);
-  }, [router, user]);
+  }, [router, user, error]);
 
   const fetchBlogs = async () => {
     setIsLoadingBlogs(true);
@@ -214,7 +217,6 @@ export default function AdminPage() {
     <div className="min-h-screen bg-muted/30 pb-20">
       <div className="container mx-auto px-4 py-8">
         <AdminHeader onLogout={handleLogout} />
-        <ErrorAlert message={error} />
 
         <Tabs defaultValue="home">
           <TabsList className="mb-8">

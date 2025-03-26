@@ -2,7 +2,7 @@
 "use client";
 
 import type React from "react";
-
+import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+const MarkdownEditor = dynamic(
+  () => import("@/components/admin/form/markdown-editor"),
+  {
+    ssr: false,
+  }
+);
+
 interface BlogFormProps {
   blog?: any;
   onSave: (blogData: any) => void;
@@ -24,7 +31,7 @@ interface BlogFormProps {
 
 export function BlogForm({ blog, onSave, onCancel }: BlogFormProps) {
   const [formData, setFormData] = useState({
-    _id: "",
+    _id: undefined,
     title: "",
     slug: "",
     excerpt: "",
@@ -38,7 +45,7 @@ export function BlogForm({ blog, onSave, onCancel }: BlogFormProps) {
   useEffect(() => {
     if (blog) {
       setFormData({
-        _id: blog._id || "",
+        _id: blog._id,
         title: blog.title || "",
         slug: blog.slug || "",
         excerpt: blog.excerpt || "",
@@ -57,6 +64,11 @@ export function BlogForm({ blog, onSave, onCancel }: BlogFormProps) {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Update handler untuk content menggunakan MarkdownEditor
+  const handleContentChange = (value: string) => {
+    setFormData((prev) => ({ ...prev, content: value }));
+  };
+
   const handleSelectChange = (value: string) => {
     setFormData((prev) => ({ ...prev, category: value }));
   };
@@ -66,13 +78,13 @@ export function BlogForm({ blog, onSave, onCancel }: BlogFormProps) {
     setIsLoading(true);
 
     try {
-      // Process tags from comma-separated string to array
+      // Process tags dari string yang dipisahkan koma ke array
       const tags = formData.tags
         .split(",")
         .map((tag: string) => tag.trim())
         .filter((tag: string) => tag !== "");
 
-      // Generate slug if empty
+      // Generate slug jika kosong
       let slug = formData.slug;
       if (!slug) {
         slug = formData.title
@@ -136,17 +148,11 @@ export function BlogForm({ blog, onSave, onCancel }: BlogFormProps) {
 
       <div className="space-y-2">
         <Label htmlFor="content">Content</Label>
-        <Textarea
-          id="content"
-          name="content"
+        {/* Gantikan Textarea dengan MarkdownEditor */}
+        <MarkdownEditor
           value={formData.content}
-          onChange={handleChange}
-          required
-          rows={10}
+          onChange={handleContentChange}
         />
-        <p className="text-xs text-muted-foreground">
-          You can use HTML for formatting
-        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
