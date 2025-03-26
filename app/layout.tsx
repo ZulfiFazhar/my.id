@@ -4,6 +4,7 @@ import "./globals.css";
 import { DockNavigation } from "@/components/dock-navigation";
 import TopLoader from "@/components/top-loader";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,7 @@ export default function RootLayout({
       >
         <AuthProvider>
           <TopLoader />
+          <Toaster position="top-center" />
           {children}
           <DockNavigation />
         </AuthProvider>

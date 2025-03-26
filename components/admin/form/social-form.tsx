@@ -24,6 +24,7 @@ interface SocialFormProps {
 
 export function SocialForm({ social, onSave, onCancel }: SocialFormProps) {
   const [formData, setFormData] = useState({
+    _id: "",
     platform: "",
     username: "",
     url: "",
@@ -36,6 +37,7 @@ export function SocialForm({ social, onSave, onCancel }: SocialFormProps) {
   useEffect(() => {
     if (social) {
       setFormData({
+        _id: social._id || "",
         platform: social.platform || "",
         username: social.username || "",
         url: social.url || "",

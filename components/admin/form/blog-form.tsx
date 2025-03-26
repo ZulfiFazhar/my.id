@@ -24,6 +24,7 @@ interface BlogFormProps {
 
 export function BlogForm({ blog, onSave, onCancel }: BlogFormProps) {
   const [formData, setFormData] = useState({
+    _id: "",
     title: "",
     slug: "",
     excerpt: "",
@@ -37,6 +38,7 @@ export function BlogForm({ blog, onSave, onCancel }: BlogFormProps) {
   useEffect(() => {
     if (blog) {
       setFormData({
+        _id: blog._id || "",
         title: blog.title || "",
         slug: blog.slug || "",
         excerpt: blog.excerpt || "",

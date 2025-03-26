@@ -28,7 +28,7 @@ export async function PUT(req: NextRequest, context: any) {
     await connectToDatabase();
 
     const data = await req.json();
-    const { id } = context.params;
+    const { id } = await context.params;
     const updatedSocial = await Social.findByIdAndUpdate(
       id,
       { $set: data },
@@ -52,7 +52,7 @@ export async function PUT(req: NextRequest, context: any) {
 export async function DELETE(req: NextRequest, context: any) {
   try {
     await connectToDatabase();
-    const { id } = context.params;
+    const { id } = await context.params;
     const deletedSocial = await Social.findByIdAndDelete(id);
 
     if (!deletedSocial) {

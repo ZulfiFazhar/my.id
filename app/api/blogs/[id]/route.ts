@@ -6,7 +6,7 @@ import Blog from "@/models/Blog";
 export async function GET(req: NextRequest, context: any) {
   try {
     await connectToDatabase();
-    const { id } = context.params;
+    const { id } = await context.params;
     const blog = await Blog.findById(id);
 
     if (!blog) {
@@ -26,7 +26,7 @@ export async function GET(req: NextRequest, context: any) {
 export async function PUT(req: NextRequest, context: any) {
   try {
     await connectToDatabase();
-    const { id } = context.params;
+    const { id } = await context.params;
     const data = await req.json();
 
     const updatedBlog = await Blog.findByIdAndUpdate(
@@ -52,7 +52,7 @@ export async function PUT(req: NextRequest, context: any) {
 export async function DELETE(req: NextRequest, context: any) {
   try {
     await connectToDatabase();
-    const { id } = context.params;
+    const { id } = await context.params;
     const deletedBlog = await Blog.findByIdAndDelete(id);
 
     if (!deletedBlog) {
