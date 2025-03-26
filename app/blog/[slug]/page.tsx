@@ -6,6 +6,8 @@ import { connectToDatabase, formatMongoData } from "@/lib/db";
 import Blog from "@/models/Blog";
 import { notFound } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 interface BlogPostPageProps {
   params: Promise<{
     slug: string;

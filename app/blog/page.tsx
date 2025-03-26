@@ -6,6 +6,8 @@ import { connectToDatabase, formatMongoData } from "@/lib/db";
 import Blog from "@/models/Blog";
 import BlogCard from "@/components/blog/blog-card";
 
+export const dynamic = "force-dynamic";
+
 async function getBlogs() {
   try {
     await connectToDatabase();

@@ -13,6 +13,9 @@ import {
 import { connectToDatabase, formatMongoData } from "@/lib/db";
 import Social from "@/models/Social";
 
+// export const revalidate = 1;
+export const dynamic = "force-dynamic";
+
 async function getSocials() {
   try {
     await connectToDatabase();
