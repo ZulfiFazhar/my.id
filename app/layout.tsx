@@ -35,6 +35,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
+          <div className="progress"></div>
           <TopLoader />
           <Toaster position="top-center" richColors />
           {children}

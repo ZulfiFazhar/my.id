@@ -56,12 +56,12 @@ export default function AdminPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!user) {
-      router.push("/login");
-    } else {
+    if (user) {
       setIsAuthenticated(true);
       fetchBlogs();
       fetchSocials();
+    } else {
+      router.push("/login");
     }
     if (error) {
       toast.error(error);

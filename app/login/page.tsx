@@ -27,24 +27,24 @@ export default function LoginPage() {
 
   const handleLoginWithGoogle = async () => {
     setIsLoading(true);
-    setError(""); // Reset error state
+    setError("");
 
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const userEmail = result.user.email;
 
       if (userEmail === allowedEmail) {
-        setUser(result.user); // Set user in context
-        router.push("/admin"); // Redirect to admin page
+        setUser(result.user);
+        router.push("/admin");
       } else {
-        setError("Access denied. Your email is not authorized."); // Friendly error message
+        setError("Access denied. Your email is not authorized.");
         setIsLoading(false);
-        await signOut(auth); // Sign out user if email is not allowed
+        await signOut(auth);
       }
     } catch (err) {
       console.error("Error during Google login:", err);
-      setError("An error occurred while logging in. Please try again."); // Generic error message
-      setIsLoading(false); // Reset loading state
+      setError("An error occurred while logging in. Please try again.");
+      setIsLoading(false);
     }
   };
 
@@ -62,7 +62,7 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           {error && (
-            <div className="p-3 text-sm bg-destructive/10 text-destructive rounded-md">
+            <div className="p-3 text-sm bg-destructive/10 text-destructive rounded-md text-center">
               {error}
             </div>
           )}
