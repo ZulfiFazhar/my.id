@@ -1,7 +1,4 @@
-"use client";
-
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 
 interface Skill {
@@ -21,48 +18,25 @@ interface AboutData {
   skillCategories: SkillCategory[];
 }
 
-export default function AboutSection() {
-  const [aboutData, setAboutData] = useState<AboutData>({
+export default async function AboutSection() {
+  let aboutData: AboutData = {
     description:
       "I'm passionate about technology, design, and creating meaningful experiences. With over 5 years of experience in web development, I enjoy sharing my knowledge and insights through my blog.",
     experience: "5+ years",
     image: "/placeholder.svg?height=400&width=400",
     skillCategories: [],
-  });
-  const [isLoading, setIsLoading] = useState(true);
+  };
 
-  useEffect(() => {
-    async function fetchAboutData() {
-      try {
-        const response = await fetch("/api/home");
-        if (response.ok) {
-          const data = await response.json();
-          setAboutData(data.about);
-        }
-      } catch (error) {
-        console.error("Error fetching about data:", error);
-      } finally {
-        setIsLoading(false);
-      }
+  try {
+    const response = await fetch(`http://localhost:3000/api/home`, {
+      cache: "no-store",
+    });
+    if (response.ok) {
+      const data = await response.json();
+      aboutData = data.about;
     }
-
-    fetchAboutData();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <section className="py-20 bg-muted/50">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div className="relative aspect-square max-w-md mx-auto md:mx-0 bg-muted animate-pulse rounded-xl"></div>
-            <div className="space-y-6">
-              <div className="h-8 bg-muted rounded-md w-1/3 animate-pulse"></div>
-              <div className="h-24 bg-muted rounded-md animate-pulse"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-    );
+  } catch (error) {
+    console.error("Error fetching about data:", error);
   }
 
   return (
