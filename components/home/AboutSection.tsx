@@ -28,7 +28,7 @@ export default async function AboutSection() {
   };
 
   try {
-    const response = await fetch(`https://www.zulfifazhar.my.id/api/home`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/home`, {
       cache: "no-store",
     });
     if (response.ok) {
