@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// social-page.tsx
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
@@ -29,7 +28,6 @@ async function getSocials() {
   }
 }
 
-// Fungsi untuk mendapatkan komponen ikon
 function getIconComponent(iconName: string) {
   const icons: Record<string, any> = {
     Github,
