@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Zulfi Fazhar Personal Website
 
-## Getting Started
+This project is a personal website built with Next.js, showcasing my blog, social links, and information about myself.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Blog:** A collection of articles and posts.
+- **Social Links:** Links to my social media profiles.
+- **About Me:** Information about my background and experience.
+- **Admin Panel:** A password-protected admin panel for managing content.
+
+## Technologies Used
+
+- [Next.js](https://nextjs.org/) - React framework for building web applications
+- [TypeScript](https://www.typescriptlang.org/) - Superset of JavaScript that adds static typing
+- [Tailwind CSS](https://tailwindcss.com/) - CSS framework for styling
+- [Firebase](https://firebase.google.com/) - Backend services for authentication and data storage
+- [Radix UI](https://www.radix-ui.com/) - UI component library
+
+## Setup Instructions
+
+1.  Clone the repository:
+
+    ```bash
+    git clone <repository_url>
+    ```
+
+2.  Install dependencies:
+
+    ```bash
+    npm install
+    ```
+
+3.  Create a `.env.local` file with the necessary environment variables. Refer to `.env.example` for the required variables.
+4.  Run the development server:
+
+    ```bash
+    npm run dev
+    ```
+
+## File Structure
+
+```
+.
+├── app/          # Next.js application directory
+├── components/   # React components
+├── contexts/     # React contexts
+├── lib/          # Utility functions and libraries
+├── models/       # Data models
+├── public/       # Static assets
+├── .env.example  # Example environment variables
+├── .gitignore    # Specifies intentionally untracked files that Git should ignore
+├── next.config.js # Next.js configuration file
+├── package-lock.json # Records the exact versions of dependencies
+├── package.json    # Contains project metadata and dependencies
+├── postcss.config.js # PostCSS configuration file
+└── tsconfig.json   # TypeScript configuration file
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Contributing
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Contributions are welcome! Please feel free to submit a pull request.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## License
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[MIT](https://opensource.org/licenses/MIT)
