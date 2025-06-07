@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -46,291 +47,79 @@
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --foreground: oklch(0.129 0.042 264.695);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.129 0.042 264.695);
+  --primary: oklch(0.208 0.042 265.755);
+  --primary-foreground: oklch(0.984 0.003 247.858);
+  --secondary: oklch(0.968 0.007 247.896);
+  --secondary-foreground: oklch(0.208 0.042 265.755);
+  --muted: oklch(0.968 0.007 247.896);
+  --muted-foreground: oklch(0.554 0.046 257.417);
+  --accent: oklch(0.968 0.007 247.896);
+  --accent-foreground: oklch(0.208 0.042 265.755);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: #dbdbdb;
+  --input: oklch(0.929 0.013 255.508);
+  --ring: oklch(0.704 0.04 256.788);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: oklch(0.984 0.003 247.858);
+  --sidebar-foreground: oklch(0.129 0.042 264.695);
+  --sidebar-primary: oklch(0.208 0.042 265.755);
+  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-accent: oklch(0.968 0.007 247.896);
+  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
+  --sidebar-border: oklch(0.929 0.013 255.508);
+  --sidebar-ring: oklch(0.704 0.04 256.788);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --background: oklch(0.129 0.042 264.695);
+  --foreground: oklch(0.984 0.003 247.858);
+  --card: oklch(0.208 0.042 265.755);
+  --card-foreground: oklch(0.984 0.003 247.858);
+  --popover: oklch(0.208 0.042 265.755);
+  --popover-foreground: oklch(0.984 0.003 247.858);
+  --primary: oklch(0.929 0.013 255.508);
+  --primary-foreground: oklch(0.208 0.042 265.755);
+  --secondary: oklch(0.279 0.041 260.031);
+  --secondary-foreground: oklch(0.984 0.003 247.858);
+  --muted: oklch(0.279 0.041 260.031);
+  --muted-foreground: oklch(0.704 0.04 256.788);
+  --accent: oklch(0.279 0.041 260.031);
+  --accent-foreground: oklch(0.984 0.003 247.858);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --ring: oklch(0.551 0.027 264.364);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar: oklch(0.208 0.042 265.755);
+  --sidebar-foreground: oklch(0.984 0.003 247.858);
   --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-accent: oklch(0.279 0.041 260.031);
+  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    scroll-behavior: smooth;
   }
   body {
     @apply bg-background text-foreground;
-  }
-}
-
-@keyframes scaleProgress {
-  0% {
-    transform: scaleX(0);
-  }
-  100% {
-    transform: scaleX(1);
-  }
-}
-
-.progress {
-  animation-timeline: scroll(root);
-  animation-name: scaleProgress;
-  animation-duration: auto;
-  animation-timing-function: linear;
-  background-color: black;
-  width: 100%;
-  height: 0.3rem;
-  position: fixed;
-  top: 0;
-  left: 0;
-  transform-origin: 0 50%;
-  z-index: 1000;
-}
-
-/* From Uiverse.io by Nawsome */
-.boxes {
-  --size: 32px;
-  --duration: 800ms;
-  height: calc(var(--size) * 2);
-  width: calc(var(--size) * 3);
-  position: relative;
-  transform-style: preserve-3d;
-  transform-origin: 50% 50%;
-  margin-top: calc(var(--size) * 1.5 * -1);
-  transform: rotateX(60deg) rotateZ(45deg) rotateY(0deg) translateZ(0px);
-}
-
-.boxes .box {
-  width: var(--size);
-  height: var(--size);
-  top: 0;
-  left: 0;
-  position: absolute;
-  transform-style: preserve-3d;
-}
-
-.boxes .box:nth-child(1) {
-  transform: translate(100%, 0);
-  -webkit-animation: box1 var(--duration) linear infinite;
-  animation: box1 var(--duration) linear infinite;
-}
-
-.boxes .box:nth-child(2) {
-  transform: translate(0, 100%);
-  -webkit-animation: box2 var(--duration) linear infinite;
-  animation: box2 var(--duration) linear infinite;
-}
-
-.boxes .box:nth-child(3) {
-  transform: translate(100%, 100%);
-  -webkit-animation: box3 var(--duration) linear infinite;
-  animation: box3 var(--duration) linear infinite;
-}
-
-.boxes .box:nth-child(4) {
-  transform: translate(200%, 0);
-  -webkit-animation: box4 var(--duration) linear infinite;
-  animation: box4 var(--duration) linear infinite;
-}
-
-.boxes .box > div {
-  --background: #5e5e5e;
-  --top: auto;
-  --right: auto;
-  --bottom: auto;
-  --left: auto;
-  --translateZ: calc(var(--size) / 2);
-  --rotateY: 0deg;
-  --rotateX: 0deg;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: var(--background);
-  top: var(--top);
-  right: var(--right);
-  bottom: var(--bottom);
-  left: var(--left);
-  transform: rotateY(var(--rotateY)) rotateX(var(--rotateX))
-    translateZ(var(--translateZ));
-}
-
-.boxes .box > div:nth-child(1) {
-  --top: 0;
-  --left: 0;
-}
-
-.boxes .box > div:nth-child(2) {
-  --background: #000000;
-  --right: 0;
-  --rotateY: 90deg;
-}
-
-.boxes .box > div:nth-child(3) {
-  --background: #242424;
-  --rotateX: -90deg;
-}
-
-.boxes .box > div:nth-child(4) {
-  --background: #c7c7c7;
-  --top: 0;
-  --left: 0;
-  --translateZ: calc(var(--size) * 3 * -1);
-}
-
-@-webkit-keyframes box1 {
-  0%,
-  50% {
-    transform: translate(100%, 0);
-  }
-
-  100% {
-    transform: translate(200%, 0);
-  }
-}
-
-@keyframes box1 {
-  0%,
-  50% {
-    transform: translate(100%, 0);
-  }
-
-  100% {
-    transform: translate(200%, 0);
-  }
-}
-
-@-webkit-keyframes box2 {
-  0% {
-    transform: translate(0, 100%);
-  }
-
-  50% {
-    transform: translate(0, 0);
-  }
-
-  100% {
-    transform: translate(100%, 0);
-  }
-}
-
-@keyframes box2 {
-  0% {
-    transform: translate(0, 100%);
-  }
-
-  50% {
-    transform: translate(0, 0);
-  }
-
-  100% {
-    transform: translate(100%, 0);
-  }
-}
-
-@-webkit-keyframes box3 {
-  0%,
-  50% {
-    transform: translate(100%, 100%);
-  }
-
-  100% {
-    transform: translate(0, 100%);
-  }
-}
-
-@keyframes box3 {
-  0%,
-  50% {
-    transform: translate(100%, 100%);
-  }
-
-  100% {
-    transform: translate(0, 100%);
-  }
-}
-
-@-webkit-keyframes box4 {
-  0% {
-    transform: translate(200%, 0);
-  }
-
-  50% {
-    transform: translate(200%, 100%);
-  }
-
-  100% {
-    transform: translate(100%, 100%);
-  }
-}
-
-@keyframes box4 {
-  0% {
-    transform: translate(200%, 0);
-  }
-
-  50% {
-    transform: translate(200%, 100%);
-  }
-
-  100% {
-    transform: translate(100%, 100%);
+    font-family: "Plus Jakarta Sans", sans-serif;
   }
 }

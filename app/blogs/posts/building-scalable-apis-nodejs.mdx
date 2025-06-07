@@ -1,0 +1,440 @@
+---
+title: "Building Scalable APIs with Node.js"
+description: "Best practices for creating robust and scalable REST APIs using Node.js and Express."
+publishDate: "2024-01-10"
+category: "Backend"
+readTime: 8
+tags: ["Node.js", "API", "Express", "Backend"]
+author: "Your Name"
+imageUrl: "/placeholder.svg"
+---
+
+Creating scalable APIs is crucial for modern web applications. In this guide, we'll explore best practices for building robust REST APIs using Node.js and Express that can handle high traffic and grow with your application.
+
+## Why Node.js for APIs?
+
+Node.js offers several advantages for API development:
+
+- **Non-blocking I/O** - Perfect for handling multiple concurrent requests
+- **Rich ecosystem** - NPM packages for almost everything
+- **JavaScript everywhere** - Same language for frontend and backend
+- **Fast development** - Quick prototyping and iteration
+
+## Setting Up the Project
+
+Let's start by creating a new Node.js project:
+
+```bash
+mkdir scalable-api
+cd scalable-api
+npm init -y
+npm install express cors helmet morgan compression
+npm install -D nodemon typescript @types/node @types/express
+```
+
+## Basic Express Setup
+
+```javascript
+// server.js
+const express = require("express");
+const cors = require("cors");
+const helmet = require("helmet");
+const morgan = require("morgan");
+const compression = require("compression");
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(helmet()); // Security headers
+app.use(cors()); // Enable CORS
+app.use(compression()); // Gzip compression
+app.use(morgan("combined")); // Logging
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
+
+// Health check endpoint
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "OK", timestamp: new Date().toISOString() });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+```
+
+## Database Connection with MongoDB
+
+```javascript
+// config/database.js
+const mongoose = require("mongoose");
+
+const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.error("Database connection failed:", error);
+    process.exit(1);
+  }
+};
+
+module.exports = connectDB;
+```
+
+## Creating Scalable Route Structure
+
+```javascript
+// routes/users.js
+const express = require("express");
+const router = express.Router();
+const User = require("../models/User");
+const {
+  validateUser,
+  handleValidationErrors,
+} = require("../middleware/validation");
+
+// GET /api/users - Get all users with pagination
+router.get("/", async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const users = await User.find()
+      .select("-password")
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    const total = await User.countDocuments();
+
+    res.json({
+      success: true,
+      data: users,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit),
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+});
+
+// POST /api/users - Create new user
+router.post("/", validateUser, handleValidationErrors, async (req, res) => {
+  try {
+    const user = new User(req.body);
+    await user.save();
+
+    res.status(201).json({
+      success: true,
+      data: user,
+      message: "User created successfully",
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Failed to create user",
+      error: error.message,
+    });
+  }
+});
+
+module.exports = router;
+```
+
+## Error Handling Middleware
+
+```javascript
+// middleware/errorHandler.js
+const errorHandler = (err, req, res, next) => {
+  let error = { ...err };
+  error.message = err.message;
+
+  // Log error
+  console.error(err);
+
+  // Mongoose bad ObjectId
+  if (err.name === "CastError") {
+    const message = "Resource not found";
+    error = { message, statusCode: 404 };
+  }
+
+  // Mongoose duplicate key
+  if (err.code === 11000) {
+    const message = "Duplicate field value entered";
+    error = { message, statusCode: 400 };
+  }
+
+  // Mongoose validation error
+  if (err.name === "ValidationError") {
+    const message = Object.values(err.errors).map((val) => val.message);
+    error = { message, statusCode: 400 };
+  }
+
+  res.status(error.statusCode || 500).json({
+    success: false,
+    message: error.message || "Server Error",
+  });
+};
+
+module.exports = errorHandler;
+```
+
+## Request Validation
+
+```javascript
+// middleware/validation.js
+const { body, validationResult } = require("express-validator");
+
+const validateUser = [
+  body("email")
+    .isEmail()
+    .normalizeEmail()
+    .withMessage("Please provide a valid email"),
+  body("password")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters"),
+  body("name")
+    .trim()
+    .isLength({ min: 2 })
+    .withMessage("Name must be at least 2 characters"),
+];
+
+const handleValidationErrors = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      message: "Validation failed",
+      errors: errors.array(),
+    });
+  }
+  next();
+};
+
+module.exports = { validateUser, handleValidationErrors };
+```
+
+## Rate Limiting
+
+```javascript
+// middleware/rateLimiter.js
+const rateLimit = require("express-rate-limit");
+
+const createRateLimiter = (windowMs, max, message) => {
+  return rateLimit({
+    windowMs,
+    max,
+    message: {
+      success: false,
+      message,
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+};
+
+// Different rate limits for different endpoints
+const generalLimiter = createRateLimiter(
+  15 * 60 * 1000, // 15 minutes
+  100, // limit each IP to 100 requests per windowMs
+  "Too many requests from this IP, please try again later"
+);
+
+const authLimiter = createRateLimiter(
+  15 * 60 * 1000, // 15 minutes
+  5, // limit each IP to 5 requests per windowMs
+  "Too many authentication attempts, please try again later"
+);
+
+module.exports = { generalLimiter, authLimiter };
+```
+
+## Caching with Redis
+
+```javascript
+// middleware/cache.js
+const redis = require("redis");
+const client = redis.createClient(process.env.REDIS_URL);
+
+const cache = (duration = 300) => {
+  // Default 5 minutes
+  return async (req, res, next) => {
+    const key = req.originalUrl;
+
+    try {
+      const cached = await client.get(key);
+
+      if (cached) {
+        return res.json(JSON.parse(cached));
+      }
+
+      // Store original res.json
+      const originalJson = res.json;
+
+      // Override res.json
+      res.json = function (data) {
+        // Cache the response
+        client.setex(key, duration, JSON.stringify(data));
+
+        // Call original res.json
+        originalJson.call(this, data);
+      };
+
+      next();
+    } catch (error) {
+      console.error("Cache error:", error);
+      next();
+    }
+  };
+};
+
+module.exports = cache;
+```
+
+## API Documentation with Swagger
+
+```javascript
+// config/swagger.js
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Scalable API",
+      version: "1.0.0",
+      description: "A scalable Node.js API with best practices",
+    },
+    servers: [
+      {
+        url: process.env.API_URL || "http://localhost:3000",
+        description: "Development server",
+      },
+    ],
+  },
+  apis: ["./routes/*.js"], // paths to files containing OpenAPI definitions
+};
+
+const specs = swaggerJsdoc(options);
+
+module.exports = { swaggerUi, specs };
+```
+
+## Testing Your API
+
+```javascript
+// tests/users.test.js
+const request = require("supertest");
+const app = require("../server");
+
+describe("Users API", () => {
+  describe("GET /api/users", () => {
+    it("should return all users", async () => {
+      const res = await request(app).get("/api/users").expect(200);
+
+      expect(res.body.success).toBe(true);
+      expect(res.body.data).toBeInstanceOf(Array);
+      expect(res.body.pagination).toBeDefined();
+    });
+
+    it("should handle pagination", async () => {
+      const res = await request(app)
+        .get("/api/users?page=1&limit=5")
+        .expect(200);
+
+      expect(res.body.pagination.page).toBe(1);
+      expect(res.body.pagination.limit).toBe(5);
+    });
+  });
+
+  describe("POST /api/users", () => {
+    it("should create a new user", async () => {
+      const userData = {
+        name: "John Doe",
+        email: "john@example.com",
+        password: "password123",
+      };
+
+      const res = await request(app)
+        .post("/api/users")
+        .send(userData)
+        .expect(201);
+
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.email).toBe(userData.email);
+    });
+  });
+});
+```
+
+## Deployment Considerations
+
+### Environment Variables
+
+```bash
+# .env
+NODE_ENV=production
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/scalable-api
+REDIS_URL=redis://localhost:6379
+JWT_SECRET=your-super-secret-jwt-key
+API_URL=https://api.yourdomain.com
+```
+
+### Docker Configuration
+
+```dockerfile
+# Dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --only=production
+
+COPY . .
+
+EXPOSE 3000
+
+USER node
+
+CMD ["node", "server.js"]
+```
+
+## Performance Best Practices
+
+1. **Use compression** - Gzip your responses
+2. **Implement caching** - Redis for session storage and caching
+3. **Database indexing** - Index frequently queried fields
+4. **Connection pooling** - Reuse database connections
+5. **Async/await** - Use proper async patterns
+6. **Rate limiting** - Prevent abuse and DoS attacks
+7. **Monitoring** - Use tools like PM2, New Relic, or DataDog
+
+## Conclusion
+
+Building scalable APIs requires careful planning and implementation of best practices. The patterns shown in this guide will help you create robust, maintainable, and performant APIs that can handle real-world traffic.
+
+Remember to:
+
+- Always validate input data
+- Implement proper error handling
+- Use middleware for cross-cutting concerns
+- Monitor your API performance
+- Write comprehensive tests
+
+Start with these foundations and gradually add more advanced features as your application grows!
