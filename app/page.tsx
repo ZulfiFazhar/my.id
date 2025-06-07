@@ -1,17 +1,19 @@
-import HeroSection from "@/components/home/HeroSection";
-import AboutSection from "@/components/home/AboutSection";
-import RecentPostsSection from "@/components/home/RecentPostsSection";
-import CTASection from "@/components/home/CTASection";
+import { Hero } from "@/components/section/hero";
+import { About } from "@/components/section/about";
+import { Tech } from "@/components/section/tech";
+import { Projects } from "@/components/section/projects";
+import { Competition } from "@/components/section/competition";
+import { Blogs } from "@/components/section/blogs";
 
-export const dynamic = "force-dynamic";
-
-export default function HomePage() {
+export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <HeroSection />
-      <AboutSection />
-      <RecentPostsSection />
-      <CTASection />
-    </div>
+    <main>
+      <Hero />
+      <About />
+      <Tech />
+      <Projects />
+      <Competition />
+      <Blogs />
+    </main>
   );
 }
