@@ -1,7 +1,20 @@
 import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { BreadcrumbNav } from "@/components/navbar/breadcrumbNav";
+import { ThemeProvider } from "@/lib/theme";
+import { TooltipProvider } from "@/components/ui/tooltip";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,13 +27,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="antialiased">
-        <div className="max-w-[960px] mx-auto px-4 pt-8 pb-28">
-          <BreadcrumbNav autoGenerate className="mb-5" />
-          {children}
-        </div>
-        <Navbar />
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <ThemeProvider defaultTheme="system" storageKey="portfolio-theme">
+          <TooltipProvider>
+            <div className="max-w-[960px] mx-auto px-4 pt-8 pb-28">
+              <BreadcrumbNav autoGenerate className="mb-5" />
+              {children}
+            </div>
+            <Navbar />
+          </TooltipProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
