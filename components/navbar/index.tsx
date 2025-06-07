@@ -10,6 +10,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { NavbarProps } from "@/types/navbar";
 import Link from "next/link";
 
@@ -100,6 +101,24 @@ const Navbar = ({
               </Tooltip>
             );
           })}
+
+          {/* Theme Toggle Button */}
+          <div className="ml-2 pl-2 border-l border-accent">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                >
+                  <ThemeToggle />
+                </motion.div>
+              </TooltipTrigger>
+              <TooltipContent side="top" sideOffset={8}>
+                <p>Toggle theme</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
         </div>
       </div>
     </nav>

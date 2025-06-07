@@ -11,6 +11,7 @@ import { BlogCard } from "@/components/section/blogs/blogCard";
 import Link from "next/link";
 import { TableOfContentsSheet } from "@/components/section/blogs/table-of-contents-sheet";
 import { ActiveTableOfContents } from "@/components/section/blogs/active-table-of-contents";
+import { StaggerContainer } from "@/components/ui/stagger-container";
 
 export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   const { slug } = await params;
@@ -149,14 +150,17 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
             <Button variant="link">View All Blogs</Button>
           </Link>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <StaggerContainer
+          staggerDelay={100}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
           {getAllMDXPosts()
             .filter((b) => b.slug !== blog.slug && b.category === blog.category)
             .slice(0, 3)
             .map((relatedBlog) => (
               <BlogCard key={relatedBlog.slug} blog={relatedBlog} />
             ))}
-        </div>
+        </StaggerContainer>
       </div>
     </div>
   );

@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { FadeIn } from "@/components/ui/fade-in";
+import Link from "next/link";
 
 export function Hero() {
   return (
@@ -19,20 +21,35 @@ export function Hero() {
         />
       </div>
 
-      <div className="flex flex-col justify-center">
-        <h1 className="text-5xl font-extrabold mb-4">
-          Hi, I&apos;m Zulfi, a Full-Stack Developer & AIoT Specialist
-        </h1>
-        <p className="text-base mb-6">
-          I&apos;m passionate about building innovative solutions that bridge
-          the gap between software and hardware. With a background in computer
-          science and a love for tinkering, I specialize in creating full-stack
-          applications with a focus on AI and IoT technologies. Let&apos;s
-          explore my work and see how I can help bring your ideas to life.
-        </p>
-        <Button className="w-full md:w-auto py-5 hover:cursor-pointer">
-          View Projects
-        </Button>
+      <div className="flex flex-col justify-center gap-4">
+        <FadeIn direction="down">
+          <h1 className="text-4xl md:text-6xl font-bold text-foreground dark:bg-gradient-to-r dark:from-blue-600 dark:to-purple-600 dark:bg-clip-text dark:text-transparent">
+            Hi, I&apos;m Zulfi, a Full-Stack Developer & AIoT Specialist
+          </h1>
+        </FadeIn>
+
+        <FadeIn delay={200} direction="up">
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl">
+            Full-Stack Developer & AI Enthusiast
+          </p>
+        </FadeIn>
+
+        <FadeIn delay={400} direction="up">
+          <p className="text-muted-foreground max-w-xl">
+            I create modern web applications and AI solutions that solve
+            real-world problems. Passionate about clean code, user experience,
+            and innovative technologies.
+          </p>
+        </FadeIn>
+
+        <FadeIn delay={600} direction="up" className="flex gap-4">
+          <Button size="lg" asChild>
+            <Link href="/projects">View My Work</Link>
+          </Button>
+          <Button variant="outline" size="lg" asChild>
+            <Link href="/socials">Get In Touch</Link>
+          </Button>
+        </FadeIn>
       </div>
     </section>
   );

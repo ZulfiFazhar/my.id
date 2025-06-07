@@ -11,7 +11,7 @@ export function Tech() {
         {techStack.map((stack, index) => (
           <div
             key={index}
-            className="flex flex-col rounded-md border border-border gap-3 p-4"
+            className="flex flex-col rounded-md border border-border gap-3 p-4 bg-card"
           >
             <stack.logo />
             <div className="grid gap-1">
