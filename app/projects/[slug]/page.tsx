@@ -3,7 +3,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { projects } from "@/types/projects";
 import {
   Github,
   ExternalLink,
@@ -13,14 +12,59 @@ import {
   AlertCircle,
 } from "lucide-react";
 import Image from "next/image";
-import { ProjectDetailPageProps } from "@/types/projects";
+import { ProjectDetailPageProps, Project } from "@/types/projects";
 import { FadeIn } from "@/components/ui/fade-in";
+
+async function getProject(slug: string) {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const res = await fetch(`${baseUrl}/api/projects/slug/${slug}`, {
+      next: { revalidate: 3600 }, // Revalidate every hour
+    });
+
+    if (!res.ok) {
+      if (res.status === 404) {
+        return null;
+      }
+      throw new Error("Failed to fetch project");
+    }
+
+    const data = await res.json();
+    return data.success ? data.data : null;
+  } catch (error) {
+    console.error("Error fetching project:", error);
+    // Fallback to static data
+    const { projects } = await import("@/types/projects");
+    return projects.find((p) => p.slug === slug) || null;
+  }
+}
+
+async function getAllProjects() {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const res = await fetch(`${baseUrl}/api/projects`, {
+      next: { revalidate: 3600 },
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch projects");
+    }
+
+    const data = await res.json();
+    return data.success ? data.data : [];
+  } catch (error) {
+    console.error("Error fetching projects:", error);
+    // Fallback to static data
+    const { projects } = await import("@/types/projects");
+    return projects;
+  }
+}
 
 export default async function ProjectDetailPage({
   params,
 }: ProjectDetailPageProps) {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug);
+  const project = await getProject(slug);
 
   if (!project) {
     notFound();
@@ -143,7 +187,7 @@ export default async function ProjectDetailPage({
               </CardHeader>
               <CardContent>
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {project.features.map((feature, index) => (
+                  {project.features.map((feature: string, index: number) => (
                     <li key={index} className="flex items-start gap-2">
                       <CheckCircle className="size-4 text-green-500 mt-0.5 flex-shrink-0" />
                       <span className="text-sm">{feature}</span>
@@ -165,7 +209,7 @@ export default async function ProjectDetailPage({
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {project.technologies.map((tech) => (
+                  {project.technologies.map((tech: string) => (
                     <Badge key={tech} variant="outline" className="text-xs">
                       {tech}
                     </Badge>
@@ -267,14 +311,16 @@ export default async function ProjectDetailPage({
 }
 
 export async function generateStaticParams() {
-  return projects.map((project) => ({
+  const projects = await getAllProjects();
+
+  return projects.map((project: Project) => ({
     slug: project.slug,
   }));
 }
 
 export async function generateMetadata({ params }: ProjectDetailPageProps) {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug);
+  const project = await getProject(slug);
 
   if (!project) {
     return {
@@ -285,5 +331,13 @@ export async function generateMetadata({ params }: ProjectDetailPageProps) {
   return {
     title: `${project.title} - Project Details`,
     description: project.description,
+    openGraph: {
+      title: project.title,
+      description: project.description,
+      images: project.imageUrl ? [project.imageUrl] : [],
+    },
   };
 }
+
+// Enable ISR
+export const revalidate = 3600; // Revalidate every hour
