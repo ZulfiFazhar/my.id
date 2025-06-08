@@ -31,7 +31,7 @@ export default function ProjectsPage() {
 
   const categories = [
     "All",
-    ...Array.from(new Set(projects.map((p) => p.category))),
+    ...Array.from(new Set(projects.flatMap((p) => p.category))),
   ];
   const statuses = [
     "All",
@@ -43,8 +43,8 @@ export default function ProjectsPage() {
 
     // Category filter
     if (categoryFilter !== "All") {
-      filtered = filtered.filter(
-        (project) => project.category === categoryFilter
+      filtered = filtered.filter((project) =>
+        project.category.includes(categoryFilter)
       );
     }
 
