@@ -1,55 +1,33 @@
 "use client";
 
-import { Moon, Sun, Monitor } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { useTheme } from "@/lib/theme";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { useRef } from "react";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { actualTheme, setTheme } = useTheme();
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const getThemeIcon = () => {
-    switch (theme) {
-      case "light":
-        return <Sun className="size-4" />;
-      case "dark":
-        return <Moon className="size-4" />;
-      default:
-        return <Monitor className="size-4" />;
-    }
+  const toggleTheme = () => {
+    const newTheme = actualTheme === "light" ? "dark" : "light";
+    setTheme(newTheme, buttonRef.current || undefined);
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-10 w-10 rounded-full p-0"
-        >
-          {getThemeIcon()}
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" side="top" sideOffset={8}>
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          <Sun className="mr-2 h-4 w-4" />
-          <span>Light</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          <Moon className="mr-2 h-4 w-4" />
-          <span>Dark</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          <Monitor className="mr-2 h-4 w-4" />
-          <span>System</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Button
+      ref={buttonRef}
+      variant="ghost"
+      size="sm"
+      className="h-10 w-10 rounded-full p-0"
+      onClick={toggleTheme}
+    >
+      {actualTheme === "light" ? (
+        <Moon className="size-4" />
+      ) : (
+        <Sun className="size-4" />
+      )}
+      <span className="sr-only">Toggle theme</span>
+    </Button>
   );
 }
