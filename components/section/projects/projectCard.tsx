@@ -16,22 +16,20 @@ export function ProjectCard({ project }: ProjectCardProps) {
     <Link href={`/projects/${project.slug}`}>
       <Card className="hover:shadow-lg transition-all duration-300 group cursor-pointer pt-0">
         <CardHeader className="space-y-3 p-0">
-          {project.imageUrl && (
-            <div className="relative overflow-hidden rounded-md">
-              <Image
-                src="./placeholder.svg"
-                alt={project.title}
-                width={400}
-                height={200}
-                loading="lazy"
-                className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-          )}
+          <div className="relative overflow-hidden rounded-t-md">
+            <Image
+              src={project.imageUrl || "/placeholder.svg"}
+              alt={project.title}
+              width={400}
+              height={200}
+              loading="lazy"
+              className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+          </div>
 
           <div className="flex items-center justify-between px-6">
             <Badge variant="outline" className="capitalize">
-              {project.category}
+              {project.category[0]}
             </Badge>
             <Badge
               variant={
@@ -75,14 +73,14 @@ export function ProjectCard({ project }: ProjectCardProps) {
         <CardFooter className="space-y-4">
           {/* Technologies */}
           <div className="flex flex-wrap gap-1">
-            {project.technologies.slice(0, 4).map((tech) => (
+            {project.technologies.slice(0, 2).map((tech) => (
               <Badge key={tech} variant="outline" className="text-xs">
                 {tech}
               </Badge>
             ))}
-            {project.technologies.length > 4 && (
+            {project.technologies.length > 2 && (
               <Badge variant="outline" className="text-xs">
-                +{project.technologies.length - 4}
+                +{project.technologies.length - 2}
               </Badge>
             )}
           </div>

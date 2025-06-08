@@ -7,9 +7,15 @@ import { socials } from "@/types/socials";
 import { ExternalLink } from "lucide-react";
 import { FadeIn } from "@/components/ui/fade-in";
 import { StaggerContainer } from "@/components/ui/stagger-container";
+import { useTheme } from "@/lib/theme";
 
 export default function SocialsPage() {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const { actualTheme } = useTheme();
+
+  const getColor = (social: (typeof socials)[0]) => {
+    return actualTheme === "dark" ? social.darkColor : social.color;
+  };
 
   return (
     <div>
@@ -38,11 +44,11 @@ export default function SocialsPage() {
               <div className="flex justify-center mb-4">
                 <div
                   className="p-4 rounded-full transition-all duration-300 group-hover:scale-110"
-                  style={{ backgroundColor: `${social.color}15` }}
+                  style={{ backgroundColor: `${getColor(social)}15` }}
                 >
                   <social.icon
                     className="size-8 transition-colors duration-300"
-                    style={{ color: social.color }}
+                    style={{ color: getColor(social) }}
                   />
                 </div>
               </div>
@@ -59,8 +65,10 @@ export default function SocialsPage() {
                 className="w-full transition-all duration-300"
                 style={{
                   backgroundColor:
-                    hoveredCard === social.platform ? social.color : undefined,
-                  borderColor: social.color,
+                    hoveredCard === social.platform
+                      ? getColor(social)
+                      : undefined,
+                  borderColor: getColor(social),
                 }}
                 variant={
                   hoveredCard === social.platform ? "default" : "outline"

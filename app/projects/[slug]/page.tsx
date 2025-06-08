@@ -11,10 +11,8 @@ import {
   CheckCircle,
   Clock,
   AlertCircle,
-  ArrowLeft,
 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { ProjectDetailPageProps } from "@/types/projects";
 import { FadeIn } from "@/components/ui/fade-in";
 
@@ -56,16 +54,6 @@ export default async function ProjectDetailPage({
 
   return (
     <div>
-      {/* Back Button */}
-      <FadeIn direction="left" className="mb-6">
-        <Button variant="ghost" asChild className="gap-2">
-          <Link href="/projects">
-            <ArrowLeft className="size-4" />
-            Back to Projects
-          </Link>
-        </Button>
-      </FadeIn>
-
       {/* Header Section */}
       <FadeIn direction="down" className="mb-8">
         <div className="flex flex-col gap-4">
@@ -90,10 +78,6 @@ export default async function ProjectDetailPage({
 
           {/* Category and Date */}
           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <span className="font-medium">Category:</span>
-              <Badge variant="secondary">{project.category}</Badge>
-            </div>
             <div className="flex items-center gap-2">
               <Calendar className="size-4" />
               <span>
@@ -123,21 +107,19 @@ export default async function ProjectDetailPage({
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-8">
           {/* Project Image */}
-          {project.imageUrl && (
-            <FadeIn direction="up">
-              <Card className="p-0">
-                <CardContent className="p-0">
-                  <Image
-                    src="../placeholder.svg"
-                    alt={project.title}
-                    width={800}
-                    height={400}
-                    className="w-full h-64 lg:h-80 object-cover rounded-lg"
-                  />
-                </CardContent>
-              </Card>
-            </FadeIn>
-          )}
+          <FadeIn direction="up">
+            <Card className="p-0">
+              <CardContent className="p-0">
+                <Image
+                  src={project.imageUrl || "/placeholder.svg"}
+                  alt={project.title}
+                  width={800}
+                  height={400}
+                  className="w-full h-48 lg:h-80 object-cover rounded-lg"
+                />
+              </CardContent>
+            </Card>
+          </FadeIn>
 
           {/* Description */}
           <FadeIn direction="up">
@@ -213,7 +195,7 @@ export default async function ProjectDetailPage({
                 <div>
                   <h4 className="font-medium text-sm mb-1">Category</h4>
                   <p className="text-sm text-muted-foreground">
-                    {project.category}
+                    {project.category.join(", ")}
                   </p>
                 </div>
 
