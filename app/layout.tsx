@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
-import { BreadcrumbNav } from "@/components/navbar/breadcrumbNav";
+import { ConditionalBreadcrumb } from "@/components/navbar/conditional-breadcrumb";
 import { ThemeProvider } from "@/lib/theme";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AuthProvider } from "@/contexts/auth-context";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -98,15 +100,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider defaultTheme="system" storageKey="portfolio-theme">
-          <TooltipProvider>
-            <div className="max-w-[960px] mx-auto px-4 pt-8 pb-28">
-              <BreadcrumbNav autoGenerate className="mb-7" />
-              {children}
-            </div>
-            <Navbar />
-          </TooltipProvider>
-        </ThemeProvider>
+        <Toaster position="top-center" />
+
+        <AuthProvider>
+          <ThemeProvider defaultTheme="system" storageKey="portfolio-theme">
+            <TooltipProvider>
+              <ConditionalBreadcrumb>{children}</ConditionalBreadcrumb>
+              <Navbar />
+            </TooltipProvider>
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );
