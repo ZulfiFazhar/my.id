@@ -2,8 +2,12 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { FadeIn } from "@/components/ui/fade-in";
 import Link from "next/link";
+import { AuroraText } from "@/components/magicui/aurora-text";
+import { AnimatedGradientText } from "@/components/magicui/animated-gradient-text";
+import { WordRotate } from "@/components/magicui/word-rotate";
 
 export function Hero() {
+  const introduction = "Hi, I'm Zulfi Fadilah Azhar";
   return (
     <section
       id="hero"
@@ -23,15 +27,22 @@ export function Hero() {
 
       <div className="flex flex-col justify-center gap-4">
         <FadeIn direction="down">
-          <h1 className="text-4xl md:text-6xl font-bold text-foreground dark:bg-gradient-to-r dark:from-blue-600 dark:to-purple-600 dark:bg-clip-text dark:text-transparent">
-            Hi, I&apos;m Zulfi, a Full-Stack Developer & AIoT Specialist
+          <h1 className="text-6xl md:text-7xl font-extrabold">
+            <span className="hidden dark:inline">
+              <AuroraText>{introduction}</AuroraText>
+            </span>
+            <span className="inline dark:hidden">{introduction}</span>
           </h1>
         </FadeIn>
 
         <FadeIn delay={200} direction="up">
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl">
-            Full-Stack Developer & AI Enthusiast
-          </p>
+          <div className="flex items-center text-xl md:text-2xl text-muted-foreground max-w-2xl">
+            <WordRotate
+              words={["Full-Stack", "ML/AI", "IoT"]}
+              className="mr-1.5"
+            />{" "}
+            Developer
+          </div>
         </FadeIn>
 
         <FadeIn delay={400} direction="up">
@@ -47,7 +58,12 @@ export function Hero() {
             <Link href="/projects">View My Work</Link>
           </Button>
           <Button variant="outline" size="lg" asChild>
-            <Link href="/socials">Get In Touch</Link>
+            <Link href="/socials">
+              <span className="inline dark:hidden">Get In Touch</span>
+              <span className="hidden dark:inline">
+                <AnimatedGradientText>Get In Touch</AnimatedGradientText>
+              </span>
+            </Link>
           </Button>
         </FadeIn>
       </div>

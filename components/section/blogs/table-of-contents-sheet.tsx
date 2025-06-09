@@ -70,10 +70,10 @@ export function TableOfContentsSheet({ headings }: TableOfContentsSheetProps) {
         </div>
       </SheetTrigger>
       <SheetContent side="right" className="w-80 sm:w-96">
-        <SheetHeader>
+        <SheetHeader className="pb-0">
           <SheetTitle className="text-left">Table of Contents</SheetTitle>
         </SheetHeader>
-        <nav className="mt-6 space-y-3 max-h-[calc(100vh-8rem)] overflow-y-auto">
+        <nav className="space-y-3 max-h-[calc(100vh-8rem)] overflow-y-auto">
           {headings.map(({ id, text, level }) => (
             <a
               key={id}
