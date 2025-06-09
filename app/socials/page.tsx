@@ -43,8 +43,8 @@ export default function SocialsPage() {
             <CardHeader className="text-center pb-4">
               <div className="flex justify-center mb-4">
                 <div
-                  className="p-4 rounded-full transition-all duration-300 group-hover:scale-110"
-                  style={{ backgroundColor: `${getColor(social)}15` }}
+                  className="p-4  transition-all duration-300 group-hover:scale-110"
+                  // style={{ backgroundColor: `${getColor(social)}15` }}
                 >
                   <social.icon
                     className="size-8 transition-colors duration-300"
