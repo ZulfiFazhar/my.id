@@ -7,6 +7,8 @@ import { ThemeProvider } from "@/lib/theme";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/auth-context";
 import { Toaster } from "@/components/ui/sonner";
+import { ConditionalBackground } from "@/components/layout/conditional-background";
+// import { ScrollProgress } from "@/components/layout/scroll-progress";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -101,9 +103,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Toaster position="top-center" />
+        <ConditionalBackground />
 
         <AuthProvider>
           <ThemeProvider defaultTheme="system" storageKey="portfolio-theme">
+            <div className="progress"></div>
+
             <TooltipProvider>
               <ConditionalBreadcrumb>{children}</ConditionalBreadcrumb>
               <Navbar />
