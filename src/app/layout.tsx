@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+// import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { ConditionalBreadcrumb } from "@/components/navbar/conditional-breadcrumb";
@@ -8,17 +8,17 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/auth-context";
 import { Toaster } from "@/components/ui/sonner";
 import { ConditionalBackground } from "@/components/layout/conditional-background";
-// import { ScrollProgress } from "@/components/layout/scroll-progress";
+import { ScrollProgress } from "@/components/magicui/scroll-progress";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+// const geistSans = Geist({
+//   variable: "--font-geist-sans",
+//   subsets: ["latin"],
+// });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// const geistMono = Geist_Mono({
+//   variable: "--font-geist-mono",
+//   subsets: ["latin"],
+// });
 
 export const metadata: Metadata = {
   title: {
@@ -99,15 +99,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`antialiased`}>
         <Toaster position="top-center" />
         <ConditionalBackground />
 
         <AuthProvider>
           <ThemeProvider defaultTheme="system" storageKey="portfolio-theme">
-            <div className="progress"></div>
+            <ScrollProgress />
 
             <TooltipProvider>
               <ConditionalBreadcrumb>{children}</ConditionalBreadcrumb>
