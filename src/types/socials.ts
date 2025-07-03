@@ -47,7 +47,7 @@ export const socials: Social[] = [
   {
     platform: "Instagram",
     username: "@zulfifazhar._",
-    url: "https://instagram.com/zulfifazhar_",
+    url: "https://instagram.com/zulfifazhar._",
     color: "#E4405F",
     darkColor: "#fb7185",
     icon: Instagram,

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { AuthGuard } from "@/components/dashboard/auth-guard";
@@ -19,7 +18,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Toaster } from "@/components/ui/sonner";
-import { DashboardSidebar } from "@/components/dashboard/sidebar";
 
 const getPageTitle = (pathname: string): string => {
   const pageMap: Record<string, string> = {
