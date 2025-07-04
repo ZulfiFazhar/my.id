@@ -18,6 +18,18 @@ export interface MDXPost {
   imageUrl?: string;
 }
 
+function calculateReadTime(content: string): number {
+  // Count words (split by whitespace and filter empty strings)
+  const wordCount = content
+    .split(/\s+/)
+    .filter((word) => word.length > 0).length;
+
+  const wordsPerMinute = 180;
+  const readTimeMinutes = Math.ceil(wordCount / wordsPerMinute);
+
+  return Math.max(1, readTimeMinutes);
+}
+
 // Blog image mapping based on category and slug
 const getBlogImage = (slug: string, category: string): string => {
   const imageMap: Record<string, string> = {
@@ -52,12 +64,14 @@ export function getAllMDXPosts(): MDXPost[] {
       const fullPath = path.join(postsDirectory, fileName);
       const fileContents = fs.readFileSync(fullPath, "utf8");
       const { data, content } = matter(fileContents);
+      const calculatedReadTime = calculateReadTime(content);
 
       return {
         id: slug, // Use slug as id
         slug,
         content,
         imageUrl: data.imageUrl || getBlogImage(slug, data.category),
+        readTime: calculatedReadTime,
         ...data,
       } as MDXPost;
     });
@@ -74,12 +88,14 @@ export function getMDXPost(slug: string): MDXPost | null {
     const fullPath = path.join(postsDirectory, `${slug}.mdx`);
     const fileContents = fs.readFileSync(fullPath, "utf8");
     const { data, content } = matter(fileContents);
+    const calculatedReadTime = calculateReadTime(content);
 
     return {
       id: slug, // Use slug as id
       slug,
       content,
       imageUrl: data.imageUrl || getBlogImage(slug, data.category),
+      readTime: calculatedReadTime,
       ...data,
     } as MDXPost;
   } catch (error) {
