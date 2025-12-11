@@ -171,7 +171,7 @@ export function OverviewTab({
                   outerRadius={60}
                   dataKey="value"
                   label={({ name, value }) =>
-                    value > 0 ? `${name}: ${value}` : ""
+                    (value || 0) > 0 ? `${name}: ${value}` : ""
                   }
                 >
                   {projectStatusData.map((entry, index) => (

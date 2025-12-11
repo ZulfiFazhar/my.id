@@ -104,11 +104,52 @@ export function DataManagement<T extends DataItem>({
 
   useEffect(() => {
     fetchItems();
-  }, []);
+  });
 
   useEffect(() => {
+    const filterItems = () => {
+      let filtered = items;
+
+      // Search filter
+      if (searchQuery) {
+        filtered = filtered.filter((item) =>
+          config.searchFields.some((field) => {
+            const value = item[field];
+            if (Array.isArray(value)) {
+              return value.some((v: any) =>
+                String(v).toLowerCase().includes(searchQuery.toLowerCase())
+              );
+            }
+            return String(value)
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase());
+          })
+        );
+      }
+
+      // Status filter
+      if (statusFilter !== "All" && config.statusField) {
+        filtered = filtered.filter(
+          (item) => item[config.statusField!] === statusFilter
+        );
+      }
+
+      // Category filter
+      if (categoryFilter !== "All" && config.categoryField) {
+        filtered = filtered.filter((item) => {
+          const categories = item[config.categoryField!];
+          if (Array.isArray(categories)) {
+            return categories.includes(categoryFilter);
+          }
+          return categories === categoryFilter;
+        });
+      }
+
+      setFilteredItems(filtered);
+    };
+
     filterItems();
-  }, [items, searchQuery, statusFilter, categoryFilter]);
+  }, [items, searchQuery, statusFilter, categoryFilter, config]);
 
   const fetchItems = async () => {
     try {
@@ -126,47 +167,6 @@ export function DataManagement<T extends DataItem>({
     } finally {
       setLoading(false);
     }
-  };
-
-  const filterItems = () => {
-    let filtered = items;
-
-    // Search filter
-    if (searchQuery) {
-      filtered = filtered.filter((item) =>
-        config.searchFields.some((field) => {
-          const value = item[field];
-          if (Array.isArray(value)) {
-            return value.some((v: any) =>
-              String(v).toLowerCase().includes(searchQuery.toLowerCase())
-            );
-          }
-          return String(value)
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase());
-        })
-      );
-    }
-
-    // Status filter
-    if (statusFilter !== "All" && config.statusField) {
-      filtered = filtered.filter(
-        (item) => item[config.statusField!] === statusFilter
-      );
-    }
-
-    // Category filter
-    if (categoryFilter !== "All" && config.categoryField) {
-      filtered = filtered.filter((item) => {
-        const categories = item[config.categoryField!];
-        if (Array.isArray(categories)) {
-          return categories.includes(categoryFilter);
-        }
-        return categories === categoryFilter;
-      });
-    }
-
-    setFilteredItems(filtered);
   };
 
   const resetForm = () => {

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
-import { Project } from "@/types/projects";
+import { getProjectBySlug } from "@/lib/projects";
 
 export async function GET(
   request: NextRequest,
@@ -9,10 +8,7 @@ export async function GET(
 ) {
   try {
     const { slug } = await params;
-    const client = await clientPromise;
-    const db = client.db("portfolio");
-
-    const project = await db.collection("projects").findOne({ slug });
+    const project = await getProjectBySlug(slug);
 
     if (!project) {
       return NextResponse.json(
@@ -21,14 +17,11 @@ export async function GET(
       );
     }
 
-    const { _id, createdAt, updatedAt, ...projectData } = project;
-
     return NextResponse.json({
       success: true,
-      data: projectData as Project,
+      data: project,
     });
   } catch (error) {
-    console.error("Error fetching project by slug:", error);
     return NextResponse.json(
       { success: false, error: "Failed to fetch project" },
       { status: 500 }
