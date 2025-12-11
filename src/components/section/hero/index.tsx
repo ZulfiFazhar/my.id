@@ -17,8 +17,8 @@ export function Hero() {
         <Image
           src="/zulfi.webp"
           alt="Zulfi Image"
-          width={100}
-          height={100}
+          width={1020}
+          height={1020}
           className="w-full h-auto max-w-[416px] object-cover rounded-xl"
           loading="lazy"
           quality={100}

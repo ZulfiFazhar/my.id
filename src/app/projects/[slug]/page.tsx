@@ -15,22 +15,12 @@ import Image from "next/image";
 import { ProjectDetailPageProps, Project } from "@/types/projects";
 import { FadeIn } from "@/components/ui/fade-in";
 
+import { getProjectBySlug, getProjects } from "@/lib/projects";
+
 async function getProject(slug: string) {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const res = await fetch(`${baseUrl}/api/projects/slug/${slug}`, {
-      next: { revalidate: 3600 }, // Revalidate every hour
-    });
-
-    if (!res.ok) {
-      if (res.status === 404) {
-        return null;
-      }
-      throw new Error("Failed to fetch project");
-    }
-
-    const data = await res.json();
-    return data.success ? data.data : null;
+    const project = await getProjectBySlug(slug);
+    return project;
   } catch (error) {
     console.error("Error fetching project:", error);
     // Fallback to static data
@@ -41,17 +31,8 @@ async function getProject(slug: string) {
 
 async function getAllProjects() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const res = await fetch(`${baseUrl}/api/projects`, {
-      next: { revalidate: 3600 },
-    });
-
-    if (!res.ok) {
-      throw new Error("Failed to fetch projects");
-    }
-
-    const data = await res.json();
-    return data.success ? data.data : [];
+    const projects = await getProjects();
+    return projects;
   } catch (error) {
     console.error("Error fetching projects:", error);
     // Fallback to static data
