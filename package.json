@@ -52,6 +52,7 @@
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.13.16",
     "@eslint/eslintrc": "^3.3.3",
     "@tailwindcss/postcss": "^4.1.17",
     "@types/next": "^8.0.7",
