@@ -4,7 +4,6 @@ import { Navbar } from "@/components/navbar";
 import { ConditionalBreadcrumb } from "@/components/navbar/conditional-breadcrumb";
 import { ThemeProvider } from "@/lib/theme";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { AuthProvider } from "@/contexts/auth-context";
 import { Toaster } from "@/components/ui/sonner";
 import { ConditionalBackground } from "@/components/layout/conditional-background";
 import { ScrollProgress } from "@/components/magicui/scroll-progress";
@@ -92,16 +91,14 @@ export default function RootLayout({
         <Toaster position="top-center" />
         <ConditionalBackground />
 
-        <AuthProvider>
-          <ThemeProvider defaultTheme="system" storageKey="portfolio-theme">
-            <ScrollProgress />
+        <ThemeProvider defaultTheme="system" storageKey="portfolio-theme">
+          <ScrollProgress />
 
-            <TooltipProvider>
-              <ConditionalBreadcrumb>{children}</ConditionalBreadcrumb>
-              <Navbar />
-            </TooltipProvider>
-          </ThemeProvider>
-        </AuthProvider>
+          <TooltipProvider>
+            <ConditionalBreadcrumb>{children}</ConditionalBreadcrumb>
+            <Navbar />
+          </TooltipProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
