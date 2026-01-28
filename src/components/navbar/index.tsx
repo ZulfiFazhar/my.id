@@ -31,11 +31,6 @@ const Navbar = ({
   ],
 }: NavbarProps) => {
   const pathname = usePathname();
-  const isDashboard = pathname.startsWith("/dashboard");
-
-  if (isDashboard) {
-    return null;
-  }
 
   const isActive = (url: string) => {
     if (url === "/") return pathname === "/";

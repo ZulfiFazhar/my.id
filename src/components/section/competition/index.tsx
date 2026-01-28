@@ -39,12 +39,12 @@ export function Competition() {
       {
         threshold: 0.3,
         rootMargin: "-50px 0px -50px 0px",
-      }
+      },
     );
 
     // Observe all competition items
     const competitionElements = document.querySelectorAll(
-      "[data-competition-id]"
+      "[data-competition-id]",
     );
     competitionElements.forEach((el) => observer.observe(el));
 
@@ -63,8 +63,8 @@ export function Competition() {
         0,
         Math.min(
           1,
-          (windowHeight - sectionTop) / (sectionHeight + windowHeight)
-        )
+          (windowHeight - sectionTop) / (sectionHeight + windowHeight),
+        ),
       );
 
       setTimelineProgress(scrollProgress);
@@ -110,8 +110,8 @@ export function Competition() {
                     comp.status === "Upcoming"
                       ? "bg-blue-500"
                       : comp.status === "Ongoing"
-                      ? "bg-yellow-500"
-                      : "bg-green-500"
+                        ? "bg-yellow-500"
+                        : "bg-green-500"
                   }`}
                 ></div>
                 <div
@@ -130,7 +130,7 @@ export function Competition() {
                             {
                               month: "long",
                               year: "numeric",
-                            }
+                            },
                           )}
                         </div>
                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
@@ -147,8 +147,8 @@ export function Competition() {
                               comp.status === "Upcoming"
                                 ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                                 : comp.status === "Ongoing"
-                                ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                                : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                                  ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                                  : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
                             }`}
                           >
                             {comp.status.charAt(0).toUpperCase() +
@@ -187,7 +187,7 @@ export function Competition() {
           <div className="absolute inset-0 bg-border"></div>
           {/* Animated progress line */}
           <div
-            className="absolute top-0 left-0 w-full bg-gradient-to-b from-blue-500 via-yellow-500 to-green-500 transition-all duration-300 ease-out"
+            className="absolute top-0 left-0 w-full bg-linear-to-b from-blue-500 via-yellow-500 to-green-500 transition-all duration-300 ease-out"
             style={{
               height: `${timelineProgress * 100}%`,
               boxShadow: "0 0 10px rgba(59, 130, 246, 0.5)",
@@ -210,8 +210,8 @@ export function Competition() {
                         comp.status === "Upcoming"
                           ? "bg-blue-500 shadow-blue-500/50"
                           : comp.status === "Ongoing"
-                          ? "bg-yellow-500 shadow-yellow-500/50"
-                          : "bg-green-500 shadow-green-500/50"
+                            ? "bg-yellow-500 shadow-yellow-500/50"
+                            : "bg-green-500 shadow-green-500/50"
                       }`
                     : "bg-muted scale-100"
                 }`}
@@ -223,8 +223,8 @@ export function Competition() {
                       comp.status === "Upcoming"
                         ? "bg-blue-500"
                         : comp.status === "Ongoing"
-                        ? "bg-yellow-500"
-                        : "bg-green-500"
+                          ? "bg-yellow-500"
+                          : "bg-green-500"
                     }`}
                   ></div>
                 )}
@@ -273,7 +273,7 @@ export function Competition() {
                             {
                               month: "long",
                               year: "numeric",
-                            }
+                            },
                           )}
                         </div>
                         <span
@@ -281,8 +281,8 @@ export function Competition() {
                             comp.status === "Upcoming"
                               ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                               : comp.status === "Ongoing"
-                              ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                              : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                                ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                                : "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
                           } ${
                             visibleItems.has(comp.id) ? "scale-100" : "scale-90"
                           }`}

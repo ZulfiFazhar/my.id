@@ -12,33 +12,15 @@ import {
   AlertCircle,
 } from "lucide-react";
 import Image from "next/image";
-import { ProjectDetailPageProps, Project } from "@/types/projects";
+import { ProjectDetailPageProps, Project, projects } from "@/types/projects";
 import { FadeIn } from "@/components/ui/fade-in";
 
-import { getProjectBySlug, getProjects } from "@/lib/projects";
-
-async function getProject(slug: string) {
-  try {
-    const project = await getProjectBySlug(slug);
-    return project;
-  } catch (error) {
-    console.error("Error fetching project:", error);
-    // Fallback to static data
-    const { projects } = await import("@/types/projects");
-    return projects.find((p) => p.slug === slug) || null;
-  }
+function getProject(slug: string) {
+  return projects.find((p) => p.slug === slug) || null;
 }
 
-async function getAllProjects() {
-  try {
-    const projects = await getProjects();
-    return projects;
-  } catch (error) {
-    console.error("Error fetching projects:", error);
-    // Fallback to static data
-    const { projects } = await import("@/types/projects");
-    return projects;
-  }
+function getAllProjects() {
+  return projects;
 }
 
 export default async function ProjectDetailPage({
