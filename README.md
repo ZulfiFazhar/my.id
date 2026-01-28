@@ -1,312 +1,325 @@
-# Personal Portfolio Website
+# Zulfi Fadilah Azhar — Personal Portfolio
 
-A modern, responsive portfolio website built with Next.js 15, TypeScript, and Tailwind CSS. Features a comprehensive blog system with MDX support, project showcase, and social media integration.
+<img src="./public/hero.png" alt="Zulfi Fadilah Azhar - portfolio hero">
 
-## ✨ Features
+A modern personal portfolio built with Next.js 15, TypeScript, MDX-based blogs, and Tailwind CSS. This repository demonstrates a production-friendly App Router structure, custom MDX rendering, a projects showcase, and a design system with theme support.
 
-### 🏠 Homepage
+Table of contents
 
-- Hero section with animated introduction
-- Featured projects showcase
-- Recent blog posts preview
-- Skills and technologies display
-- Contact information
+- Overview
+- Features
+- Quickstart
+- Project structure
+- Working with Blogs (MDX)
+- MDX components & heading IDs
+- Working with Projects
+- Theming & Styling
+- Scripts
+- Deployment
+- Troubleshooting & tips
+- Contributing
+- Contact & acknowledgments
+- License
 
-### 📝 Blog System
+---
 
-- **MDX Support**: Write blogs in Markdown with React components
-- **Dynamic Content**: File-based blog posts with frontmatter
-- **Table of Contents**: Auto-generated TOC with active section highlighting
-- **Responsive Design**: Mobile-friendly with floating TOC sheet
-- **Rich Content**: Code syntax highlighting, images, and interactive components
-- **Filtering & Search**: Category-based filtering and full-text search
-- **Related Posts**: Smart recommendations based on categories
+## Overview
 
-### 💼 Projects Portfolio
+This project is a portfolio site for Zulfi Fadilah Azhar. It uses the Next.js 15 App Router and Server Components where possible. Content-driven pages (blogs, projects) are file-based and easy to author.
 
-- **Project Showcase**: Detailed project cards with technologies used
-- **Advanced Filtering**: Filter by category, status, and sort options
-- **Grid/List Views**: Toggle between different viewing modes
-- **Project Details**: Comprehensive project pages with features and links
-- **Live Demos**: Direct links to live projects and source code
+Key implementation points:
 
-### 🏆 Competitions
+- Blogs are MDX files in `src/app/blogs/posts/` and are processed with `gray-matter` (frontmatter) and rendered using `next-mdx-remote`.
+- Blog utilities live in `src/lib/mdx.ts` (read-time calc, image mapping, getAllMDXPosts/getMDXPost).
+- Project utilities live in `src/lib/projects.ts` (getProjects filters and lookups).
+- Custom MDX components are provided in `src/components/mdx-components.tsx`.
+- Global layout & theme provider are configured in `src/app/layout.tsx`.
+- Tailwind + custom CSS variables/styles are in `src/app/globals.css`.
 
-- Competition showcase with results and achievements
-- Event details with dates, organizers, and locations
-- Status tracking (Upcoming, Ongoing, Completed)
+---
 
-### 🌐 Social Media
+## Features
 
-- Social media platform links with custom styling
-- Platform-specific branding and colors
-- Contact information and collaboration invites
+- Next.js 15 App Router + Server Components
+- File-based MDX blog system with frontmatter and automatic TOC extraction
+- Custom MDX components (styled headings, code, blockquote, links)
+- Projects listing with category/status filters and sorting
+- Theme switching (light/dark) via a ThemeProvider
+- Reusable UI components (shadcn-style components under `src/components/ui/`)
 
-### 🎨 Design System
+---
 
-- **Responsive Design**: Mobile-first approach with Tailwind CSS
-- **Dark/Light Mode**: Theme switching with system preference detection
-- **Component Library**: Reusable components with shadcn/ui
-- **Smooth Animations**: Framer Motion for enhanced user experience
-- **Modern Typography**: Optimized fonts with Next.js font optimization
+## Quickstart
 
-## 🛠️ Tech Stack
+Requirements:
 
-### Frontend
-
-- **Next.js 15** - React framework with App Router
-- **TypeScript** - Type-safe development
-- **Tailwind CSS** - Utility-first CSS framework
-- **shadcn/ui** - High-quality component library
-- **Lucide React** - Beautiful icon library
-
-### Content Management
-
-- **MDX** - Markdown with JSX support
-- **gray-matter** - Frontmatter parsing
-- **next-mdx-remote** - Remote MDX content rendering
-
-### Development Tools
-
-- **ESLint** - Code linting
-- **Prettier** - Code formatting
-- **PostCSS** - CSS processing
-- **TypeScript** - Static type checking
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js 18.0 or later
+- Node.js 18+ (recommended)
 - npm, yarn, pnpm, or bun
 
-### Installation
-
-1. **Clone the repository**
+1. Clone:
 
 ```bash
 git clone https://github.com/ZulfiFazhar/my.id.git
 cd my.id
 ```
 
-2. **Install dependencies**
+2. Install dependencies:
 
 ```bash
 npm install
 # or
-yarn install
-# or
 pnpm install
 # or
+yarn install
+# or (if you use bun)
 bun install
 ```
 
-3. **Run the development server**
+3. Development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# The project uses: next dev --turbopack
+# Visit http://localhost:3000
 ```
 
-4. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
-
-## 📁 Project Structure
-
-```
-├── app/                         # Next.js App Router
-│   ├── blogs/                   # Blog pages
-│   │   ├── [slug]/              # Dynamic blog post pages
-│   │   ├── posts/               # MDX blog posts
-│   │   └── page.tsx             # Blog listing page
-│   ├── projects/                # Project pages
-│   ├── socials/                 # Social media page
-│   ├── competitions/            # Competitions page
-│   ├── globals.css              # Global styles
-│   ├── layout.tsx               # Root layout
-│   └── page.tsx                 # Homepage
-├── components/                  # React components
-│   ├── ui/                      # shadcn/ui components
-│   ├── section/                 # Page sections
-│   │   ├── blogs/               # Blog-related components
-│   │   ├── projects/            # Project-related components
-│   │   └── hero/                # Hero section components
-├── lib/                         # Utility functions
-│   ├── mdx.ts                   # MDX processing utilities
-│   └── utils.ts                 # General utilities
-├── types/                       # TypeScript type definitions
-│   ├── blogs.ts                 # Blog-related types
-│   ├── projects.ts              # Project-related types
-│   ├── socials.ts               # Social media types
-│   └── competitions.ts          # Competition types
-├── public/                      # Static assets
-│   └── images/                  # Image assets
-└── README.md                    # Project documentation
-```
-
-## ✍️ Content Management
-
-### Adding Blog Posts
-
-1. **Create a new MDX file** in `app/blogs/posts/`:
+4. Build for production:
 
 ```bash
-app/blogs/posts/your-post-slug.mdx
+npm run build
+npm run start
 ```
 
-2. **Add frontmatter** at the top:
+5. Lint:
 
-```yaml
+```bash
+npm run lint
+```
+
+---
+
+## Project structure (important files)
+
+- app/
+  - layout.tsx — Root layout, ThemeProvider, global site metadata
+  - globals.css — Tailwind + CSS variables, dark mode tokens
+  - page.tsx — Homepage assembling sections (Hero, About, Projects, Blogs)
+  - blogs/
+    - page.tsx — Blog list page (server side)
+    - [slug]/page.tsx — Dynamic blog detail (server side)
+    - posts/\*.mdx — MDX blog posts (content)
+  - projects/ — Projects listing & pages
+- components/
+  - mdx-components.tsx — MDX to React component mapping
+  - ui/ — UI primitives (Button, Badge, Tooltip, etc.)
+  - section/ — Page sections (hero, blogs, projects, etc.)
+- lib/
+  - mdx.ts — MDX helpers (getAllMDXPosts, getMDXPost, read time, image mapping)
+  - projects.ts — Project query helpers (getProjects, getProjectBySlug, getProjectById)
+- types/ — TypeScript type definitions for blogs/projects/etc.
+
+---
+
+## Working with Blogs (MDX)
+
+Blog posts live in:
+`src/app/blogs/posts/your-post-slug.mdx`
+
+Required frontmatter fields (used by `src/lib/mdx.ts` and templates):
+
+- title (string)
+- description (string)
+- publishDate (ISO date string)
+- category (string)
+- tags (array of strings)
+- author (string)
+- imageUrl (optional string) — if omitted a fallback is chosen based on slug/category
+  Example frontmatter and MDX file:
+
+````md
 ---
 title: "Your Blog Post Title"
-description: "Brief description of your post"
+description: "A short summary."
 publishDate: "2024-01-20"
 category: "Frontend"
-readTime: 5
-tags: ["React", "Next.js", "TypeScript"]
+tags: ["React", "Next.js"]
 author: "Your Name"
-imageUrl: "/images/blogs/your-post-image.jpg"
+imageUrl: "/placeholder.svg"
 ---
-```
 
-3. **Write your content** using Markdown and JSX:
+# Intro
 
-````markdown
-# Your Blog Content
-
-This is a paragraph with **bold** and _italic_ text.
+Write Markdown and JSX here.
 
 ```javascript
-const example = "code block";
+// code block example
+console.log("Hello world");
 ```
 ````
 
-<CustomComponent prop="value" />
+<SomeCustomComponent prop="value" />
 ```
 
-### Adding Projects
+Important behaviors implemented in src/lib/mdx.ts:
 
-Edit `types/projects.ts` to add new projects:
+- getAllMDXPosts() — reads all `.mdx` files, parses frontmatter, calculates readTime and sorts by publishDate (newest first).
+- getMDXPost(slug) — reads a single post by slug and returns parsed data. Returns null and logs an error if the file can't be read.
+- calculateReadTime(content) — counts words and estimates read time at 180 wpm (minimum 1 minute).
+- getBlogImage(slug, category) — maps specific slugs to images and falls back to category-based images or a generic default.
 
-```typescript
+Notes:
+
+- Use relative image paths from the `public/` directory (e.g. `/images/blogs/xxx.jpg`).
+- The blog detail page extracts headings from the raw MDX content (lines starting with `##` or `###`) to build a Table of Contents for desktop and a TOC sheet for mobile.
+
+---
+
+## MDX components & heading IDs
+
+Custom MDX components registered in `src/components/mdx-components.tsx` include:
+
+- h1, h2, h3 — styled headings that automatically generate id attributes (converted to kebab-case) for anchors and TOC linking
+- p, ul, ol, li — styled text elements
+- code, pre — inline code and block code wrappers
+- blockquote, hr, a — special styling for quotes, separators, and links
+
+Heading id generation algorithm:
+
+- Lowercases heading text, replaces non-alphanumeric with "-", and trims leading/trailing dashes.
+  Example:
+
+```text
+"Getting Started with Next.js" -> "getting-started-with-next-js"
+```
+
+You can use any of the UI components in MDX by importing them where needed or by extending mdxComponents to inject additional components.
+
+---
+
+## Working with Projects
+
+Project data and helpers live in:
+
+- `src/lib/projects.ts` — exports getProjects(options), getProjectBySlug(slug), getProjectById(id)
+- `src/types/projects.ts` — outlines the project type and contains the `projects` array used by the app (edit here to add or update projects)
+
+getProjects(options) supports:
+
+- category?: string (filters by category, skip when "All")
+- status?: string (filters by project status, skip when "All")
+- limit?: number (returns the first N results)
+- Projects are sorted by startDate descending (newest first).
+
+Example project item (add into `types/projects.ts` as part of the exported `projects` array):
+
+```ts
 {
   id: "proj-005",
   title: "Your Project",
   slug: "your-project-slug",
-  description: "Project description",
+  description: "Short description of the project",
   technologies: ["React", "Node.js"],
   category: "Web",
   status: "Completed",
   startDate: "2024-01-01",
-  // ... other fields
+  // optionally include links, images, or additional fields as your types define
 }
 ```
-
-### Updating Social Links
-
-Modify `types/socials.ts` to update social media links:
-
-```typescript
-{
-  platform: "GitHub",
-  username: "@yourusername",
-  url: "https://github.com/yourusername",
-  color: "#333333",
-  icon: Github,
-}
-```
-
-## 🎨 Customization
-
-### Theming
-
-- Modify `app/globals.css` for global styles
-- Update `tailwind.config.js` for custom colors and themes
-- Use CSS custom properties for theme variables
-
-### Components
-
-- All UI components are in `components/ui/`
-- Custom components are organized by feature in `components/section/`
-- Modify existing components or create new ones as needed
-
-### Layout
-
-- Update `app/layout.tsx` for global layout changes
-- Modify navigation in layout components
-- Add new pages in the `app/` directory
-
-## 📱 Responsive Design
-
-The portfolio is fully responsive with breakpoints:
-
-- **Mobile**: < 640px
-- **Tablet**: 640px - 1024px
-- **Desktop**: > 1024px
-
-Key responsive features:
-
-- Mobile-first CSS approach
-- Touch-friendly navigation
-- Optimized images for different screen sizes
-- Adaptive layouts for content sections
-
-## 🔧 Development Scripts
-
-```bash
-bun run dev          # Start development server
-bun run build        # Build for production
-bun run start        # Start production server
-bun run lint         # Run ESLint
-bun run type-check   # Run TypeScript checks
-```
-
-## 📦 Deployment
-
-### Vercel (Recommended)
-
-1. Push your code to GitHub
-2. Connect your repository to Vercel
-3. Deploy automatically on every push
-
-### Other Platforms
-
-- **Netlify**: Connect GitHub repo and deploy
-- **Railway**: Docker deployment support
-- **Self-hosted**: Use `npm run build` and serve the `out` folder
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Contact
-
-- **Email**: zulfi.fazhar12@gmail.com
-- **LinkedIn**: [LinkedIn](https://www.linkedin.com/in/zulfi-fadilah-azhar/)
-- **GitHub**: [GitHub](https://github.com/ZulfiFazhar)
-- **Portfolio**: [Website](https://www.zulfifazhar.my.id/)
-
-## 🙏 Acknowledgments
-
-- [Next.js](https://nextjs.org/) for the amazing framework
-- [shadcn/ui](https://ui.shadcn.com/) for beautiful components
-- [Tailwind CSS](https://tailwindcss.com/) for utility-first styling
-- [Lucide](https://lucide.dev/) for the icon library
-- [Vercel](https://vercel.com/) for hosting and deployment
 
 ---
 
-⭐ **Star this repository if you found it helpful!**
+## Theming & Styling
+
+- Global styles and theme tokens are in `src/app/globals.css`.
+- The site uses CSS custom properties and provides a `.dark` token block to switch values for dark mode.
+- ThemeProvider is used in `src/app/layout.tsx` (storageKey: `portfolio-theme`).
+- Tailwind is configured and used across components; if you update Tailwind config, make sure to recompile.
+
+---
+
+## Scripts
+
+Defined in package.json:
+
+- dev: next dev --turbopack
+- build: next build
+- start: next start
+- lint: next lint
+
+Example:
+
+```bash
+npm run dev
+npm run build
+npm run start
+npm run lint
+```
+
+Note: The project uses the Turbopack dev server for faster HMR by default (`--turbopack`).
+
+---
+
+## Deployment
+
+Recommended: Vercel (native Next.js support).
+
+- Connect the repository in Vercel, automatic deployments occur on push to main.
+- Ensure `NODE` version is compatible (Node 18+ recommended).
+
+Other platforms: Netlify, Cloudflare Pages, or any host supporting Next.js builds.
+
+---
+
+## Troubleshooting & tips
+
+- MDX parsing errors: Check frontmatter syntax and ensure `---` boundaries are present.
+- Missing images: Use paths under `public/` (e.g. `/images/blogs/your.jpg`). `getBlogImage` maps common slugs; update or add files to `public/images/blogs/`.
+- TypeScript path alias: Code uses `@/*` -> `src/*` (see tsconfig.json).
+- If `getMDXPost` returns null, check console for the read-file error — the file may be missing or have a permission issue.
+- There is no LICENSE file in the repository root. Add a LICENSE if you want to explicitly set usage terms.
+
+---
+
+## Contributing
+
+1. Fork the repo
+2. Create a branch: `git checkout -b feature/your-feature`
+3. Commit changes and open a pull request
+4. Keep commits atomic and include description about code and content changes
+
+For content changes:
+
+- Add MDX files to `src/app/blogs/posts/`
+- Update `src/types/projects.ts` for project entries
+- Update or extend `src/components/mdx-components.tsx` if you need new MDX components
+
+---
+
+## Contact
+
+- Email: zulfi.fadilazhar@gmail.com
+- LinkedIn: https://www.linkedin.com/in/zulfi-fadilah-azhar/
+- GitHub: https://github.com/ZulfiFazhar
+- Portfolio: https://www.zulfifazhar.dev/
+
+---
+
+## Acknowledgments
+
+- Next.js, React, Tailwind CSS, shadcn/ui, Lucide icons, and the open-source community for inspiration and components.
+
+---
+
+## License
+
+There is no LICENSE file included in the repository. If you would like to add one, choose a license (for example MIT) and add a `LICENSE` file at the repository root.
+
+---
+
+If you want, I can:
+
+- Add a small CONTRIBUTING.md with a checklist
+- Provide a sample MDX post template file under `src/app/blogs/posts/`
+- Create a script to validate MDX frontmatter fields before building
+
+Just tell me which you'd like next.
